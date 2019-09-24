@@ -1,0 +1,11 @@
+C:\Github\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.csprojAssemblyReference.cache
+C:\Github\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.csproj.CoreCompileInputs.cache
+C:\Github\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.AssemblyInfoInputs.cache
+C:\Github\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.AssemblyInfo.cs
+C:\Github\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp2.2\LinguagensFormais.deps.json
+C:\Github\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp2.2\LinguagensFormais.runtimeconfig.json
+C:\Github\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp2.2\LinguagensFormais.runtimeconfig.dev.json
+C:\Github\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp2.2\LinguagensFormais.dll
+C:\Github\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp2.2\LinguagensFormais.pdb
+C:\Github\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.dll
+C:\Github\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.pdb
