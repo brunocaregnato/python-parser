@@ -6,11 +6,11 @@ namespace LinguagensFormais
 {
     class Tokens
     {
-        public Dictionary<string, string> TokenDictionary { get; private set; }
+        public Dictionary<string, string> TokenList { get; private set; }
 
         public Tokens()
         {
-            TokenDictionary = new Dictionary<string, string>();
+            TokenList = new Dictionary<string, string>();
             LoadTokens();
         }
 
@@ -21,95 +21,102 @@ namespace LinguagensFormais
         private void LoadTokens()
         {
             //Identacao
-            TokenDictionary.Add("indent", "TOKEN.INDENT");
-            TokenDictionary.Add("dedent", "TOKEN.DEDENT");
+            TokenList.Add("indent", "TOKEN.INDENT");
+            TokenList.Add("dedent", "TOKEN.DEDENT");
 
             //Tipos
-            TokenDictionary.Add("string", "TOKEN.STRING");
-            TokenDictionary.Add("float", "TOKEN.FLOAT");
-            TokenDictionary.Add("integer", "TOKEN.INTEGER");
+            TokenList.Add("string", "TOKEN.STRING");
+            TokenList.Add("float", "TOKEN.FLOAT");
+            TokenList.Add("integer", "TOKEN.INTEGER");
 
             //Palavras reservadas
-            TokenDictionary.Add("identf", "TOKEN.ID");
-            TokenDictionary.Add("and", "TOKEN.AND");
-            TokenDictionary.Add("del", "TOKEN.DEL");
-            TokenDictionary.Add("from", "TOKEN.FROM");
-            TokenDictionary.Add("not", "TOKEN.NOT");
-            TokenDictionary.Add("while", "TOKEN.WHILE");
-            TokenDictionary.Add("as", "TOKEN.AS");
-            TokenDictionary.Add("elif", "TOKEN.ELIF");
-            TokenDictionary.Add("global", "TOKEN.GLOBAL");
-            TokenDictionary.Add("or", "TOKEN.OR");
-            TokenDictionary.Add("with", "TOKEN.WITH");
-            TokenDictionary.Add("assert", "TOKEN.ASSERT");
-            TokenDictionary.Add("else", "TOKEN.ELSE");
-            TokenDictionary.Add("if", "TOKEN.IF");
-            TokenDictionary.Add("pass", "TOKEN.PASS");
-            TokenDictionary.Add("yield", "TOKEN.YIELD");
-            TokenDictionary.Add("break", "TOKEN.BREAK");
-            TokenDictionary.Add("except", "TOKEN.EXCEPT");
-            TokenDictionary.Add("import", "TOKEN.IMPORT");
-            TokenDictionary.Add("print", "TOKEN.PRINT");
-            TokenDictionary.Add("class", "TOKEN.CLASS");
-            TokenDictionary.Add("exec", "TOKEN.EXEC");
-            TokenDictionary.Add("in", "TOKEN.IN");
-            TokenDictionary.Add("raise", "TOKEN.RAISE");
-            TokenDictionary.Add("continue", "TOKEN.CONTINUE");
-            TokenDictionary.Add("finally", "TOKEN.FINALLY");
-            TokenDictionary.Add("is", "TOKEN.IS");
-            TokenDictionary.Add("return", "TOKEN.RETURN");
-            TokenDictionary.Add("def", "TOKEN.DEF");
-            TokenDictionary.Add("for", "TOKEN.FOR");
-            TokenDictionary.Add("lambda", "TOKEN.LAMBDA");
-            TokenDictionary.Add("try", "TOKEN.TRY");
-            TokenDictionary.Add("none", "TOKEN.NONE");
-            TokenDictionary.Add("nonlocal", "TOKEN.NONLOCAL");
+            TokenList.Add("identf", "TOKEN.ID");
+            TokenList.Add("and", "TOKEN.AND");
+            TokenList.Add("del", "TOKEN.DEL");
+            TokenList.Add("from", "TOKEN.FROM");
+            TokenList.Add("not", "TOKEN.NOT");
+            TokenList.Add("while", "TOKEN.WHILE");
+            TokenList.Add("as", "TOKEN.AS");
+            TokenList.Add("elif", "TOKEN.ELIF");
+            TokenList.Add("global", "TOKEN.GLOBAL");
+            TokenList.Add("or", "TOKEN.OR");
+            TokenList.Add("with", "TOKEN.WITH");
+            TokenList.Add("assert", "TOKEN.ASSERT");
+            TokenList.Add("else", "TOKEN.ELSE");
+            TokenList.Add("if", "TOKEN.IF");
+            TokenList.Add("pass", "TOKEN.PASS");
+            TokenList.Add("yield", "TOKEN.YIELD");
+            TokenList.Add("break", "TOKEN.BREAK");
+            TokenList.Add("except", "TOKEN.EXCEPT");
+            TokenList.Add("import", "TOKEN.IMPORT");
+            TokenList.Add("print", "TOKEN.PRINT");
+            TokenList.Add("class", "TOKEN.CLASS");
+            TokenList.Add("exec", "TOKEN.EXEC");
+            TokenList.Add("in", "TOKEN.IN");
+            TokenList.Add("raise", "TOKEN.RAISE");
+            TokenList.Add("continue", "TOKEN.CONTINUE");
+            TokenList.Add("finally", "TOKEN.FINALLY");
+            TokenList.Add("is", "TOKEN.IS");
+            TokenList.Add("return", "TOKEN.RETURN");
+            TokenList.Add("def", "TOKEN.DEF");
+            TokenList.Add("for", "TOKEN.FOR");
+            TokenList.Add("lambda", "TOKEN.LAMBDA");
+            TokenList.Add("try", "TOKEN.TRY");
+            TokenList.Add("none", "TOKEN.NONE");
+            TokenList.Add("nonlocal", "TOKEN.NONLOCAL");
 
-            //Operadores e Delimitadores
-            TokenDictionary.Add("(", "TOKEN.LEFTPAR");
-            TokenDictionary.Add(")", "TOKEN.RIGHTPAR");
-            TokenDictionary.Add(",", "TOKEN.COMMA");
-            TokenDictionary.Add(".", "TOKEN.DOT");
-            TokenDictionary.Add("'", "TOKEN.BACKQUOTE");
-            TokenDictionary.Add("{", "TOKEN.LEFTBRAC");
-            TokenDictionary.Add("}", "TOKEN.RIGHTBRAC");
-            TokenDictionary.Add("~", "TOKEN.TILDE");
-            TokenDictionary.Add("@", "TOKEN.AT");
-            TokenDictionary.Add("!=", "TOKEN.NOTEQUAL");
-            TokenDictionary.Add("[", "TOKEN.LEFTSQB");
-            TokenDictionary.Add("]", "TOKEN.RIGHTSQB");
-            TokenDictionary.Add(":", "TOKEN.COLON");
-            TokenDictionary.Add(";", "TOKEN.SEMICOLON");
-            TokenDictionary.Add("+", "TOKEN.PLUS");
-            TokenDictionary.Add("+=", "TOKEN.PLUSEQUAL");
-            TokenDictionary.Add("-", "TOKEN.MINUS");
-            TokenDictionary.Add("-=", "TOKEN.MINEQUAL");
-            TokenDictionary.Add("*", "TOKEN.STAR");
-            TokenDictionary.Add("*=", "TOKEN.STAREQUAL");
-            TokenDictionary.Add("**", "TOKEN.DOUBLESTAR");
-            TokenDictionary.Add("**=", "TOKEN.DOUBLESTAREQUAL");
-            TokenDictionary.Add("/", "TOKEN.SLASH");
-            TokenDictionary.Add("/=", "TOKEN.SLASHEQUAL");
-            TokenDictionary.Add("//", "TOKEN.DOUBLESLASH");
-            TokenDictionary.Add("//=", "TOKEN.DOUBLESLASHEQUAL");
-            TokenDictionary.Add("|", "TOKEN.VERTBAR");
-            TokenDictionary.Add("|=", "TOKEN.VERTBAREQUAL");
-            TokenDictionary.Add("&", "TOKEN.AMPER");
-            TokenDictionary.Add("&=", "TOKEN.AMPEREQUAL");
-            TokenDictionary.Add("<", "TOKEN.LESS");
-            TokenDictionary.Add("<=", "TOKEN.LESSEQUAL");
-            TokenDictionary.Add("<<", "TOKEN.SHIFTLEFT");
-            TokenDictionary.Add("<<=", "TOKEN.SHIFTLEFTEQUAL");
-            TokenDictionary.Add(">", "TOKEN.GREATER");
-            TokenDictionary.Add(">=", "TOKEN.GREATEREQUAL");
-            TokenDictionary.Add(">>", "TOKEN.SHIFTRIGHT");
-            TokenDictionary.Add(">>=", "TOKEN.SHIFTRIGHTEQUAL");
-            TokenDictionary.Add("=", "TOKEN.EQUAL");
-            TokenDictionary.Add("==", "TOKEN.EQUALEQUAL");
-            TokenDictionary.Add("%", "TOKEN.PERCENT");
-            TokenDictionary.Add("%=", "TOKEN.PERCENTEQUAL");
-            TokenDictionary.Add("^", "TOKEN.CIRCUMFLEX");
-            TokenDictionary.Add("^=", "TOKEN.CIRCUMFLEXEQUAL");
+            //Operadores
+            TokenList.Add("+", "TOKEN.MAIS");
+            TokenList.Add("-", "TOKEN.MENOS");
+            TokenList.Add("*", "TOKEN.VEZES");
+            TokenList.Add("**", "TOKEN.NOME_PARAMETRO");
+            TokenList.Add("/", "TOKEN.BARRA");
+            TokenList.Add("//", "TOKEN.BARRA_DUPLA");
+            TokenList.Add("%", "TOKEN.PORCENTO");
+            TokenList.Add("<<", "TOKEN.SHIFT_LEFT");
+            TokenList.Add(">>", "TOKEN.SHIFT_RIGHT");
+            TokenList.Add("&", "TOKEN.ECOMERCIAL");
+            TokenList.Add("|", "TOKEN.PIPE");
+            TokenList.Add("^", "TOKEN.CIRCUMFLEXO");
+            TokenList.Add("~", "TOKEN.TIL");
+            TokenList.Add("<", "TOKEN.MENOR");
+            TokenList.Add(">", "TOKEN.MAIOR");
+            TokenList.Add("<=", "TOKEN.MENOR_IGUAL");
+            TokenList.Add(">=", "TOKEN.MAIOR_IGUAL");
+            TokenList.Add("==", "TOKEN.IGUAL_IGUAL");
+            TokenList.Add("!=", "TOKEN.DIFERENTE");
+            
+            //Delimitadores
+            TokenList.Add("(", "TOKEN.PARENTESES_ESQUERDO");
+            TokenList.Add(")", "TOKEN.PARENTESES_DIREITO");
+            TokenList.Add("[", "TOKEN.COLCHETES_ESQUERDO");
+            TokenList.Add("]", "TOKEN.COLCHETES_DIREITO");
+            TokenList.Add("{", "TOKEN.CHAVES_ESQUERDA");
+            TokenList.Add("}", "TOKEN.CHAVES_DIREITA");
+            TokenList.Add(",", "TOKEN.VIRGULA");
+            TokenList.Add(":", "TOKEN.DOIS_PONTOS");
+            TokenList.Add(".", "TOKEN.PONTO");
+            TokenList.Add(";", "TOKEN.PONTO_VIRGULA");
+            TokenList.Add("@", "TOKEN.ARROBA");
+            TokenList.Add("=", "TOKEN.IGUAL");
+            TokenList.Add("+=", "TOKEN.MAIS_IGUAL");
+            TokenList.Add("-=", "TOKEN.MENOS_IGUAL");
+            TokenList.Add("*=", "TOKEN.VEZES_IGUAL");
+            TokenList.Add("/=", "TOKEN.BARRA_IGUAL");
+            TokenList.Add("//=", "TOKEN.BARRA_DUPLA_IGUAL");
+            TokenList.Add("%=", "TOKEN.PORCENTO_IGUAL");
+            TokenList.Add("@=", "TOKEN.ARROBA_IGUAL");
+            TokenList.Add("&=", "TOKEN.ECOMERCIAL_IGUAL");
+            TokenList.Add("|=", "TOKEN.PIPE_IGUAL");
+            TokenList.Add("^=", "TOKEN.CIRCUMFLEXO_IGUAL");
+            TokenList.Add(">>=", "TOKEN.SHIFT_RIGHT_IGUAL");
+            TokenList.Add("<<=", "TOKEN.SHIFT_LEFT_IGUAL");
+            TokenList.Add("**=", "TOKEN.DUPLO_ASTERISCO_IGUAL");
+
+            //Caracteres ASCII  
+            TokenList.Add("'", "TOKEN.ASPAS_SIMPLES");
+            TokenList.Add("#", "TOKEN.COMENTARIO");
+            TokenList.Add("'''", "TOKEN.MULTIPLO_COMENTARIO");
         }
     }
 }

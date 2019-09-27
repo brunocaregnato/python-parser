@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Github\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj": {}
+    "C:\\Github\\linguagens-formais\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj": {}
   },
   "projects": {
-    "C:\\Github\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj": {
+    "C:\\Github\\linguagens-formais\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Github\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj",
+        "projectUniqueName": "C:\\Github\\linguagens-formais\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj",
         "projectName": "LinguagensFormais",
-        "projectPath": "C:\\Github\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj",
+        "projectPath": "C:\\Github\\linguagens-formais\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj",
         "packagesPath": "C:\\Users\\Bruno\\.nuget\\packages\\",
-        "outputPath": "C:\\Github\\LinguagensFormais\\LinguagensFormais\\obj\\",
+        "outputPath": "C:\\Github\\linguagens-formais\\LinguagensFormais\\LinguagensFormais\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

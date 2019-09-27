@@ -41,6 +41,9 @@ namespace LinguagensFormais
             }
         }
 
+        /**
+         * Gera o arquivo Saida.lex
+         */
         private static void GenerateFile()
         {
             try
@@ -56,6 +59,8 @@ namespace LinguagensFormais
                     column = " | " + string.Format("{0,4}", "Coluna") + " |";
                     printLine = sequence + token + lexema + line + column;
                     outputFile.WriteLine(printLine);
+                    var space = new String('-', 105);
+                    outputFile.WriteLine(space);
                     foreach (TokensFound rt in Lexical.TokensFound)
                     {
                         sequence = "| " + string.Format("{0,9}", rt.Sequence);
