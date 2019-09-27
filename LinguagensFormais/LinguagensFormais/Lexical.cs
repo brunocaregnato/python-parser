@@ -9,7 +9,7 @@ namespace LinguagensFormais
     {
         public int Line { get; private set; }
         public int Position { get; private set; }
-        public string Lexema { get; private set; }
+        public string Lexeme { get; private set; }
         public int LastIdentationLevel { get; private set; }
         public List<TokensFound> TokensFound { get; private set; }
         private Tokens Tokens { get; set; } 
@@ -172,23 +172,23 @@ namespace LinguagensFormais
             for (Position = 0; Position < readLine.Length; Position++)
             {
                 char character = readLine[Position];
-                Lexema = character.ToString();
+                Lexeme = character.ToString();
 
                 if (character.Equals(' ')) continue;
 
                 /* Comentario */
                 if (character.Equals('#'))
                 {
-                    newToken = new TokensFound(Tokens.TokenList[Lexema], Lexema, Position, Line);
+                    newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                     TokensFound.Add(newToken);
                     break;
                 }
-                    
-                /* Delimitadores */
-                if (character.Equals('(') || character.Equals(')') || character.Equals(',') || character.Equals('{') || character.Equals('}') ||
-                    character.Equals('~') || character.Equals('@') || character.Equals('[') || character.Equals(']') || character.Equals(':'))
+
+                /* Delimitadores que não são combinados com operadores e/ou outros delimitadores */
+                if (character.Equals('(') || character.Equals(')') || character.Equals('[') || character.Equals(']') || character.Equals('{') ||
+                    character.Equals('}') || character.Equals('~') || character.Equals(',') || character.Equals(':'))
                 {
-                    newToken = new TokensFound(Tokens.TokenList[Lexema], Lexema, Position, Line);
+                    newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                     TokensFound.Add(newToken);
                     continue;
                 }
@@ -199,10 +199,50 @@ namespace LinguagensFormais
                  */
                 if (character.Equals(';'))
                 {
-                    newToken = new TokensFound(Tokens.TokenList[Lexema], Lexema, Position, Line);
+                    newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                     TokensFound.Add(newToken);
                     Line++;
                     continue;
+                }
+
+                /* Caso seja o operador de diferente */
+                if (character.Equals('!'))
+                {
+                    var nextCharacter = readLine[++Position];
+                    if (nextCharacter.Equals('='))
+                    {
+                        newToken = new TokensFound(Tokens.TokenList["!="], "!=", Position, Line);
+                        TokensFound.Add(newToken);
+                        continue;
+                    }
+                }
+
+                /* Operadores e delimitadores que podem ser combinados com = */
+                if(character.Equals('+') || character.Equals('-') || character.Equals('=') || character.Equals('|') ||
+                   character.Equals('&') || character.Equals('%') || character.Equals('^') || character.Equals('@'))
+                {
+                    /* Verifica se não é fim de linha */
+                    if(Position + 1 < readLine.Length)
+                    {
+                        /* Verifica se não possui um = após o primeiro caracter */
+                        var nextCharacter = readLine[++Position];
+                        if (nextCharacter.Equals('='))
+                        {
+                            newToken = new TokensFound(Tokens.TokenList[Lexeme + "="], Lexeme + "=", Position, Line);
+                            TokensFound.Add(newToken);
+                            continue;
+                        }
+                    }
+                    /* Se nao possui = após o caracter, grava somente o caracter */ 
+                    newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
+                    TokensFound.Add(newToken);
+                    continue;
+                }
+                
+                /* Operadores que podem ser combinados com eles mesmo ou com = */
+                if(character.Equals('*') || character.Equals('/') || character.Equals('<') || character.Equals('>'))
+                {
+
                 }
 
             }

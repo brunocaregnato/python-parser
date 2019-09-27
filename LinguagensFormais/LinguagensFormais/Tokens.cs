@@ -97,7 +97,7 @@ namespace LinguagensFormais
             TokenList.Add(":", "TOKEN.DOIS_PONTOS");
             TokenList.Add(".", "TOKEN.PONTO");
             TokenList.Add(";", "TOKEN.PONTO_VIRGULA");
-            TokenList.Add("@", "TOKEN.ARROBA");
+            TokenList.Add("@", "TOKEN.ARROBA"); //o arroba é tanto operador como delimitador 
             TokenList.Add("=", "TOKEN.IGUAL");
             TokenList.Add("+=", "TOKEN.MAIS_IGUAL");
             TokenList.Add("-=", "TOKEN.MENOS_IGUAL");
