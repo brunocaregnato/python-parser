@@ -29,7 +29,7 @@ namespace LinguagensFormais
 
         private static void LexicalAnalysis()
         {
-            _ = new TokensFound();
+            new TokensFound();
             Lexical = new Lexical();
             if (Lexical.LexicalAnalysis(FilePath))
             {
