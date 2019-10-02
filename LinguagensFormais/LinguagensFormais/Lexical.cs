@@ -67,10 +67,8 @@ namespace LinguagensFormais
 
                             for(Position = 0; Position < readLine.Length; Position++)
                             {
-                                var returnOpDeli = (VerifyOperatorsAndDelimeters(readLine));
-                                if (returnOpDeli.Equals(1)) break;
-                                else if (returnOpDeli.Equals(2)) continue;
-                               
+                                if (VerifyOperatorsAndDelimeters(readLine)) continue;                                                               
+
                                 switch (VerifyTypes(readLine))
                                 {
                                     case 0: return false;
@@ -78,13 +76,10 @@ namespace LinguagensFormais
                                 }
 
                                 if (VerifyKeywordsAndIds(readLine)) continue;
-                            }
-                            
+                            }                            
                         }
-                        else
-                        {
-                            Line++;
-                        }
+
+                        Line++;
                     }                
                 }
             }
@@ -189,20 +184,20 @@ namespace LinguagensFormais
         /**
          * Verifica os operadores e delimitadores
          */
-        private int VerifyOperatorsAndDelimeters(string readLine)
+        private bool VerifyOperatorsAndDelimeters(string readLine)
         {
             TokensFound newToken = null;
             char character = readLine[Position];
             Lexeme = character.ToString();
 
-            if (character.Equals(' ')) return 2;
+            if (character.Equals(' ')) return true;
 
             /* Comentario */
             if (character.Equals('#'))
             {
                 newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                 TokensFound.Add(newToken);
-                return 2;
+                return true;
             }
 
             /* Delimitadores que não são combinados com operadores e/ou outros delimitadores */
@@ -211,7 +206,7 @@ namespace LinguagensFormais
             {
                 newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                 TokensFound.Add(newToken);
-                return 2;
+                return true;
             }
 
             /*
@@ -223,7 +218,7 @@ namespace LinguagensFormais
                 newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                 TokensFound.Add(newToken);
                 Line++;
-                return 1;
+                return true;
             }
 
             /* Caso seja o operador de diferente */
@@ -232,18 +227,14 @@ namespace LinguagensFormais
                 if(Position + 1 > readLine.Length)
                 {
                     Position--;
-                    return 2;
+                    return true;
                 }
                 var nextCharacter = readLine[++Position];
                 if (nextCharacter.Equals('='))
                 {
                     newToken = new TokensFound(Tokens.TokenList["!="], "!=", Position, Line);
                     TokensFound.Add(newToken);
-                    return 1;
-                }
-                else
-                {
-                    return 2;
+                    return true;
                 }
             }
 
@@ -260,13 +251,13 @@ namespace LinguagensFormais
                     {
                         newToken = new TokensFound(Tokens.TokenList[Lexeme + "="], Lexeme + "=", Position, Line);
                         TokensFound.Add(newToken);
-                        return 1;
+                        return true;
                     }
                 }
                 /* Se nao possui = após o caracter, grava somente o caracter */ 
                 newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                 TokensFound.Add(newToken);
-                return 1;
+                return true;
             }
             
             /* Operadores que podem ser combinados com eles mesmo ou com = */
@@ -281,7 +272,7 @@ namespace LinguagensFormais
                     {
                         newToken = new TokensFound(Tokens.TokenList[Lexeme + "="], Lexeme + "=", Position, Line);
                         TokensFound.Add(newToken);
-                        return 1;
+                        return true;
                     }
                     else if (nextCharacter.Equals(character))
                     {
@@ -290,19 +281,19 @@ namespace LinguagensFormais
                         {
                             newToken = new TokensFound(Tokens.TokenList[Lexeme + Lexeme + "="], Lexeme + Lexeme + "=", Position, Line);
                             TokensFound.Add(newToken);
-                            return 1;
+                            return true;
                         }
                         newToken = new TokensFound(Tokens.TokenList[Lexeme + Lexeme], Lexeme + Lexeme, Position, Line);
                         TokensFound.Add(newToken);
-                        return 1;
+                        return true;
                     }
                 }
                 /* Se nao possui = após o caracter ou o proprio caracter, grava somente o caracter */
                 newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                 TokensFound.Add(newToken);
-                return 1;
+                return true;
             }
-            return 3;
+            return false;
         }
 
         /**
