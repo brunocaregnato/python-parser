@@ -53,7 +53,7 @@ namespace LinguagensFormais
                 using (StreamWriter outputFile = new StreamWriter(outputPath + @"\Saida.lex"))
                 {
                     sequence = "| " + string.Format("{0,9}", "Sequência");
-                    token = " |" + string.Format("{0,20}", "Token");
+                    token = " |" + string.Format("{0,25}", "Token");
                     lexema = " |" + string.Format("{0,50}", "Lexema");
                     line = " | " + string.Format("{0,4}", "Linha");
                     column = " | " + string.Format("{0,4}", "Coluna") + " |";
@@ -64,7 +64,7 @@ namespace LinguagensFormais
                     foreach (TokensFound rt in Lexical.TokensFound)
                     {
                         sequence = "| " + string.Format("{0,9}", rt.Sequence);
-                        token = " |" + string.Format("{0,20}", rt.Token);
+                        token = " |" + string.Format("{0,25}", rt.Token);
                         lexema = " |" + string.Format("{0,50}", rt.Lexema);
                         line = " | " + string.Format("{0,4}", rt.Line);
                         column = " | " + string.Format("{0,4}", rt.Column) + " |";
