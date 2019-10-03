@@ -12,7 +12,7 @@ namespace LinguagensFormais
         public string Lexeme { get; private set; }
         public Stack<int> IdentationLevel { get; private set; }
         public List<TokensFound> TokensFound { get; private set; }
-        private Tokens Tokens { get; set; } 
+        private Tokens Tokens { get; set; }
 
         public Lexical()
         {
@@ -38,11 +38,13 @@ namespace LinguagensFormais
                     TokensFound newToken = null;
                     bool isOnComment = false;
 
-                    while((readLine = streamReader.ReadLine()) != null)
+                    while ((readLine = streamReader.ReadLine()) != null)
                     {
                         Position = 0;
                         /* Arquivo sem linhas */
                         if (readLine.Length.Equals(0)) return false;
+
+                        readLine = readLine.Trim();
 
                         /* Verifica se começa com um comentário múltiplo */
                         var lineAux = Line;
@@ -66,21 +68,28 @@ namespace LinguagensFormais
                             if (returnIdentation.Equals(0)) return false;
                             else if (returnIdentation.Equals(1)) continue;
 
-                            for(Position = 0; Position < readLine.Length; Position++)
+                            for (Position = IdentationLevel.Peek(); Position < readLine.Length; Position++)
                             {
-                                var returnOpeDelim = VerifyOperatorsAndDelimeters(readLine);
-                                if (returnOpeDelim.Equals(1)) continue;
-                                else if (returnOpeDelim.Equals(2)) break;
-                                                                                    
 
-                                switch (VerifyTypes(readLine))
+                                isOnComment = VerifyMultipleComment(readLine, isOnComment);
+
+                                if (!isOnComment)
                                 {
-                                    case 0: return false;
-                                    case 1: continue;
-                                }
+                                    var returnOpeDelim = VerifyOperatorsAndDelimeters(readLine);
+                                    if (returnOpeDelim.Equals(1)) continue;
+                                    else if (returnOpeDelim.Equals(2)) break;
 
-                                if (VerifyKeywordsAndIds(readLine)) continue;
-                            }                            
+
+                                    switch (VerifyTypes(readLine))
+                                    {
+                                        case 0: return false;
+                                        case 1: continue;
+                                    }
+
+                                    if (VerifyKeywordsAndIds(readLine)) continue;
+                                }
+                                else break;
+                            }
                         }
 
                         Line++;
@@ -97,7 +106,7 @@ namespace LinguagensFormais
             }
             catch (Exception ex)
             {
-                throw ex;   
+                throw ex;
             }
 
             return true;
@@ -129,7 +138,7 @@ namespace LinguagensFormais
                         isOnComment = false;
                         var newToken = new TokensFound("TOKEN.MULTIPLO_COMENTARIO", "Fecha Múltiplo Comentário", positionOnLine, Line);
                         TokensFound.Add(newToken);
-                        if (readLine[positionOnLine + 3] > readLine.Length) Line++;
+                        if (positionOnLine + 3 >= readLine.Length) Line++;
                         break;
                     }
                     positionOnLine++;
@@ -156,7 +165,7 @@ namespace LinguagensFormais
 
             /* Verifica identação com tabulação */
             int tabulacao = 0;
-            while(readLine[tabulacao].Equals('\t'))
+            while (readLine[tabulacao].Equals('\t'))
             {
                 tabulacao++;
                 if (tabulacao >= readLine.Length) break;
@@ -165,7 +174,7 @@ namespace LinguagensFormais
             if (spaces.Equals(0)) spaces = tabulacao * 4;
 
             if (spaces < readLine.Length)
-                if (readLine[spaces].Equals('#')) return 1;            
+                if (readLine[spaces].Equals('#')) return 1;
 
             /* Verifica se identou */
             if (spaces > IdentationLevel.Peek())
@@ -173,7 +182,7 @@ namespace LinguagensFormais
                 var newToken = new TokensFound("TOKEN.INDENT", "Indentenção", 0, Line);
                 TokensFound.Add(newToken);
                 IdentationLevel.Push(spaces);
-                
+
             }
             /* Verifica se desidentou */
             else if (spaces < IdentationLevel.Peek())
@@ -229,12 +238,13 @@ namespace LinguagensFormais
             /* Caso seja o operador de diferente */
             if (character.Equals('!'))
             {
-                if(Position + 1 > readLine.Length)
+                Position++;
+                if (Position + 1 > readLine.Length)
                 {
                     Position--;
                     return 1;
                 }
-                var nextCharacter = readLine[++Position];
+                var nextCharacter = readLine[Position];
                 if (nextCharacter.Equals('='))
                 {
                     newToken = new TokensFound(Tokens.TokenList["!="], "!=", Position, Line);
@@ -244,57 +254,64 @@ namespace LinguagensFormais
             }
 
             /* Operadores e delimitadores que podem ser combinados com = */
-            if(character.Equals('+') || character.Equals('-') || character.Equals('=') || character.Equals('|') ||
+            if (character.Equals('+') || character.Equals('-') || character.Equals('=') || character.Equals('|') ||
                character.Equals('&') || character.Equals('%') || character.Equals('^') || character.Equals('@'))
-            {
-                /* Verifica se não é fim de linha */
-                if(Position + 1 < readLine.Length)
-                {
-                    /* Verifica se não possui um = após o primeiro caracter */
-                    if (readLine[++Position].Equals('='))
-                    {
-                        newToken = new TokensFound(Tokens.TokenList[Lexeme + "="], Lexeme + "=", Position, Line);
-                        TokensFound.Add(newToken);
-                        return 1;
-                    }
-                }
-
-                /* Se nao possui = após o caracter, grava somente o caracter */
-                newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, --Position, Line);
-                TokensFound.Add(newToken);
-                return 1;
-            }
-            
-            /* Operadores que podem ser combinados com eles mesmo ou com = */
-            if(character.Equals('*') || character.Equals('/') || character.Equals('<') || character.Equals('>'))
             {
                 /* Verifica se não é fim de linha */
                 if (Position + 1 < readLine.Length)
                 {
                     /* Verifica se não possui um = após o primeiro caracter */
-                    var nextCharacter = readLine[++Position];
+                    if (readLine[Position + 1].Equals('='))
+                    {
+                        newToken = new TokensFound(Tokens.TokenList[Lexeme + "="], Lexeme + "=", Position, Line);
+                        TokensFound.Add(newToken);
+                        Position++;
+                        return 1;
+                    }
+                }
+
+                /* Se nao possui = após o caracter, grava somente o caracter */
+                newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
+                TokensFound.Add(newToken);
+                return 1;
+            }
+
+            /* Operadores que podem ser combinados com eles mesmo ou com = */
+            if (character.Equals('*') || character.Equals('/') || character.Equals('<') || character.Equals('>'))
+            {
+                /* Verifica se não é fim de linha */
+                if (Position + 1 < readLine.Length)
+                {
+                    /* Verifica se não possui um = após o primeiro caracter */
+                    var nextCharacter = readLine[Position + 1];
                     if (nextCharacter.Equals('='))
                     {
                         newToken = new TokensFound(Tokens.TokenList[Lexeme + "="], Lexeme + "=", Position, Line);
                         TokensFound.Add(newToken);
+                        Position++;
                         return 1;
                     }
                     else if (nextCharacter.Equals(character))
                     {
-                        nextCharacter = readLine[++Position];
-                        if (nextCharacter.Equals("="))
+                        Position++;
+                        if(Position + 1 < readLine.Length)
                         {
-                            newToken = new TokensFound(Tokens.TokenList[Lexeme + Lexeme + "="], Lexeme + Lexeme + "=", Position, Line);
+                            nextCharacter = readLine[Position + 1];
+                            if (nextCharacter.Equals("="))
+                            {
+                                newToken = new TokensFound(Tokens.TokenList[Lexeme + Lexeme + "="], Lexeme + Lexeme + "=", Position - 1, Line);
+                                TokensFound.Add(newToken);
+                                Position++;
+                                return 1;
+                            }
+                            newToken = new TokensFound(Tokens.TokenList[Lexeme + Lexeme], Lexeme + Lexeme, Position - 1, Line);
                             TokensFound.Add(newToken);
                             return 1;
-                        }
-                        newToken = new TokensFound(Tokens.TokenList[Lexeme + Lexeme], Lexeme + Lexeme, --Position, Line);
-                        TokensFound.Add(newToken);
-                        return 1;
+                        }                        
                     }
                 }
                 /* Se nao possui = após o caracter ou o proprio caracter, grava somente o caracter */
-                newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, --Position, Line);
+                newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                 TokensFound.Add(newToken);
                 return 1;
             }
@@ -314,7 +331,7 @@ namespace LinguagensFormais
                 if (Position + 1 < readLine.Length)
                 {
                     var nextCharacter = readLine[Position + 1];
-                    while ((nextCharacter >= 'a'  &&  nextCharacter <= 'z') ||
+                    while ((nextCharacter >= 'a' && nextCharacter <= 'z') ||
                             (nextCharacter >= 'A' && nextCharacter <= 'Z') ||
                             (nextCharacter >= '0' && nextCharacter <= '9') || nextCharacter.Equals('_'))
                     {
@@ -336,10 +353,10 @@ namespace LinguagensFormais
                     newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, initialPosition, Line);
                 }
                 else
-                {   
+                {
                     newToken = new TokensFound("TK.ID", Lexeme, initialPosition, Line);
                 }
-                    
+
                 TokensFound.Add(newToken);
                 return true;
             }
@@ -360,7 +377,8 @@ namespace LinguagensFormais
                 var type = "INTEGER";
                 while (Position + 1 < readLine.Length)
                 {
-                    var nextCharacter = readLine[++Position];
+                    Position++;
+                    var nextCharacter = readLine[Position];
                     if (nextCharacter >= '0' && nextCharacter <= '9')
                     {
                         Lexeme += nextCharacter.ToString();
@@ -370,7 +388,7 @@ namespace LinguagensFormais
                         if (type.Equals("FLOAT"))
                         {
                             break;
-                        }   
+                        }
                         else
                         {
                             Lexeme += nextCharacter.ToString();
@@ -387,12 +405,13 @@ namespace LinguagensFormais
                 TokensFound.Add(newToken);
             }
             /* string */
-            else if (character.Equals('"') || character.Equals('\'')) 
+            else if (character.Equals('"') || character.Equals('\''))
             {
                 var startPosition = Position;
                 while (Position + 1 < readLine.Length)
                 {
-                    var nextCharacter = readLine[++Position];
+                    Position++;
+                    var nextCharacter = readLine[Position];
                     Lexeme += nextCharacter.ToString();
                     if (nextCharacter.Equals(character)) break;
 
