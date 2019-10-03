@@ -46,8 +46,12 @@ namespace LinguagensFormais
 
                         readLine = readLine.Trim();
 
+                        /* Linha de espaçamento */
+                        if (readLine.Length.Equals(0)) continue;    
+
                         /* Verifica se começa com um comentário múltiplo */
                         var lineAux = Line;
+
                         isOnComment = VerifyMultipleComment(readLine, isOnComment);
 
                         if (!isOnComment)
