@@ -10,7 +10,7 @@ namespace LinguagensFormais
         public int Line { get; private set; }
         public int Position { get; private set; }
         public string Lexeme { get; private set; }
-        public int LastIdentationLevel { get; private set; }
+        public Stack<int> IdentationLevel { get; private set; }
         public List<TokensFound> TokensFound { get; private set; }
         private Tokens Tokens { get; set; } 
 
@@ -18,7 +18,8 @@ namespace LinguagensFormais
         {
             Line = 1;
             Position = 0;
-            LastIdentationLevel = 0;
+            IdentationLevel = new Stack<int>();
+            IdentationLevel.Push(0);
             TokensFound = new List<TokensFound>();
         }
 
@@ -67,7 +68,10 @@ namespace LinguagensFormais
 
                             for(Position = 0; Position < readLine.Length; Position++)
                             {
-                                if (VerifyOperatorsAndDelimeters(readLine)) continue;                                                               
+                                var returnOpeDelim = VerifyOperatorsAndDelimeters(readLine);
+                                if (returnOpeDelim.Equals(1)) continue;
+                                else if (returnOpeDelim.Equals(2)) break;
+                                                                                    
 
                                 switch (VerifyTypes(readLine))
                                 {
@@ -80,7 +84,15 @@ namespace LinguagensFormais
                         }
 
                         Line++;
-                    }                
+                    }
+
+                    while (IdentationLevel.Count > 1)
+                    {
+                        newToken = new TokensFound("TOKEN.DEDENT", "Desindentenção", 0, Line);
+                        TokensFound.Add(newToken);
+                        IdentationLevel.Pop();
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -134,7 +146,7 @@ namespace LinguagensFormais
         private int VerifyIdentation(string readLine)
         {
 
-            /* Verifica identação com espaços, o python usa 4 espaços por identação */
+            /* Verifica identação com espaços */
             int spaces = 0;
             while (readLine[spaces].Equals(' '))
             {
@@ -142,6 +154,7 @@ namespace LinguagensFormais
                 if (spaces >= readLine.Length) break;
             }
 
+            /* Verifica identação com tabulação */
             int tabulacao = 0;
             while(readLine[tabulacao].Equals('\t'))
             {
@@ -152,31 +165,23 @@ namespace LinguagensFormais
             if (spaces.Equals(0)) spaces = tabulacao * 4;
 
             if (spaces < readLine.Length)
-                if (readLine[spaces].Equals('#')) return 1;
+                if (readLine[spaces].Equals('#')) return 1;            
 
-            /* se o módulo da divisão da quantidade de espaços por 4 não der zero quer dizer que a tabulacao esta incorreta */
-            if (spaces % 4 != 0) return 0;
-
-            /* quantidade de identações */
-            int indentation = spaces / 4;
-
-            int verifyIndentation = indentation - LastIdentationLevel;
-
-            /* Verifica a quantidade de vezes que identou */
-            while (verifyIndentation > 0)
+            /* Verifica se identou */
+            if (spaces > IdentationLevel.Peek())
             {
                 var newToken = new TokensFound("TOKEN.INDENT", "Indentenção", 0, Line);
                 TokensFound.Add(newToken);
-                verifyIndentation--;
+                IdentationLevel.Push(spaces);
+                
             }
-            /* Verifica a quantidade de vezes que desidentou */
-            while (verifyIndentation < 0)
+            /* Verifica se desidentou */
+            else if (spaces < IdentationLevel.Peek())
             {
                 var newToken = new TokensFound("TOKEN.DEDENT", "Desindentenção", 0, Line);
                 TokensFound.Add(newToken);
-                verifyIndentation++;
+                IdentationLevel.Pop();
             }
-            LastIdentationLevel = indentation;
 
             return 2;
         }
@@ -184,20 +189,20 @@ namespace LinguagensFormais
         /**
          * Verifica os operadores e delimitadores
          */
-        private bool VerifyOperatorsAndDelimeters(string readLine)
+        private int VerifyOperatorsAndDelimeters(string readLine)
         {
             TokensFound newToken = null;
             char character = readLine[Position];
             Lexeme = character.ToString();
 
-            if (character.Equals(' ')) return true;
+            if (character.Equals(' ')) return 1;
 
             /* Comentario */
             if (character.Equals('#'))
             {
                 newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                 TokensFound.Add(newToken);
-                return true;
+                return 2;
             }
 
             /* Delimitadores que não são combinados com operadores e/ou outros delimitadores */
@@ -206,7 +211,7 @@ namespace LinguagensFormais
             {
                 newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                 TokensFound.Add(newToken);
-                return true;
+                return 1;
             }
 
             /*
@@ -218,7 +223,7 @@ namespace LinguagensFormais
                 newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
                 TokensFound.Add(newToken);
                 Line++;
-                return true;
+                return 1;
             }
 
             /* Caso seja o operador de diferente */
@@ -227,14 +232,14 @@ namespace LinguagensFormais
                 if(Position + 1 > readLine.Length)
                 {
                     Position--;
-                    return true;
+                    return 1;
                 }
                 var nextCharacter = readLine[++Position];
                 if (nextCharacter.Equals('='))
                 {
                     newToken = new TokensFound(Tokens.TokenList["!="], "!=", Position, Line);
                     TokensFound.Add(newToken);
-                    return true;
+                    return 1;
                 }
             }
 
@@ -246,18 +251,18 @@ namespace LinguagensFormais
                 if(Position + 1 < readLine.Length)
                 {
                     /* Verifica se não possui um = após o primeiro caracter */
-                    var nextCharacter = readLine[++Position];
-                    if (nextCharacter.Equals('='))
+                    if (readLine[++Position].Equals('='))
                     {
                         newToken = new TokensFound(Tokens.TokenList[Lexeme + "="], Lexeme + "=", Position, Line);
                         TokensFound.Add(newToken);
-                        return true;
+                        return 1;
                     }
                 }
-                /* Se nao possui = após o caracter, grava somente o caracter */ 
-                newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
+
+                /* Se nao possui = após o caracter, grava somente o caracter */
+                newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, --Position, Line);
                 TokensFound.Add(newToken);
-                return true;
+                return 1;
             }
             
             /* Operadores que podem ser combinados com eles mesmo ou com = */
@@ -272,7 +277,7 @@ namespace LinguagensFormais
                     {
                         newToken = new TokensFound(Tokens.TokenList[Lexeme + "="], Lexeme + "=", Position, Line);
                         TokensFound.Add(newToken);
-                        return true;
+                        return 1;
                     }
                     else if (nextCharacter.Equals(character))
                     {
@@ -281,19 +286,19 @@ namespace LinguagensFormais
                         {
                             newToken = new TokensFound(Tokens.TokenList[Lexeme + Lexeme + "="], Lexeme + Lexeme + "=", Position, Line);
                             TokensFound.Add(newToken);
-                            return true;
+                            return 1;
                         }
-                        newToken = new TokensFound(Tokens.TokenList[Lexeme + Lexeme], Lexeme + Lexeme, Position, Line);
+                        newToken = new TokensFound(Tokens.TokenList[Lexeme + Lexeme], Lexeme + Lexeme, --Position, Line);
                         TokensFound.Add(newToken);
-                        return true;
+                        return 1;
                     }
                 }
                 /* Se nao possui = após o caracter ou o proprio caracter, grava somente o caracter */
-                newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, Position, Line);
+                newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, --Position, Line);
                 TokensFound.Add(newToken);
-                return true;
+                return 1;
             }
-            return false;
+            return 0;
         }
 
         /**
@@ -308,29 +313,33 @@ namespace LinguagensFormais
                 int initialPosition = Position;
                 if (Position + 1 < readLine.Length)
                 {
-                    var nextCharacter = readLine[++Position];
+                    var nextCharacter = readLine[Position + 1];
                     while ((nextCharacter >= 'a'  &&  nextCharacter <= 'z') ||
                             (nextCharacter >= 'A' && nextCharacter <= 'Z') ||
                             (nextCharacter >= '0' && nextCharacter <= '9') || nextCharacter.Equals('_'))
                     {
                         Lexeme += nextCharacter.ToString();
+                        Position++;
                         if (Position + 1 < readLine.Length)
                         {
-                            nextCharacter = readLine[++Position];
+                            nextCharacter = readLine[Position + 1];
                         }
                         else
                         {
                             nextCharacter = ' ';
                         }
-                            
                     }
-                    Position--;
                 }
                 TokensFound newToken = null;
                 if (Tokens.TokenList.ContainsKey(Lexeme))
+                {
                     newToken = new TokensFound(Tokens.TokenList[Lexeme], Lexeme, initialPosition, Line);
+                }
                 else
+                {   
                     newToken = new TokensFound("TK.ID", Lexeme, initialPosition, Line);
+                }
+                    
                 TokensFound.Add(newToken);
                 return true;
             }
