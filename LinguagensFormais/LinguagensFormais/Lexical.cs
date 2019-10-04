@@ -51,12 +51,12 @@ namespace LinguagensFormais
 
                         /* Verifica se começa com um comentário múltiplo */
                         var lineAux = Line;
-
                         isOnComment = VerifyMultipleComment(readLine, isOnComment);
 
+                        /* Se esta num comentario, entao ignora o que tem dentro */
                         if (!isOnComment)
                         {
-                            if (lineAux != Line) continue;
+                            if (!lineAux.Equals(Line)) continue;
 
                             /* Verifica se começa com um comentario de uma linha */
                             if (readLine[0].Equals('#'))
@@ -77,6 +77,7 @@ namespace LinguagensFormais
 
                                 isOnComment = VerifyMultipleComment(readLine, isOnComment);
 
+                                /* Se esta num comentario, entao ignora o que tem dentro */
                                 if (!isOnComment)
                                 {
                                     var returnOpeDelim = VerifyOperatorsAndDelimeters(readLine);
@@ -387,7 +388,7 @@ namespace LinguagensFormais
                     {
                         Lexeme += nextCharacter.ToString();
                     }
-                    else if (nextCharacter.Equals('.'))
+                    else if (nextCharacter.Equals('.')) //se encontrou . então é float
                     {
                         if (type.Equals("FLOAT"))
                         {
