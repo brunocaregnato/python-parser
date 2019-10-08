@@ -44,7 +44,7 @@ namespace LinguagensFormais
                         /* Arquivo sem linhas */
                         if (readLine.Length.Equals(0)) return false;
 
-                        readLine = readLine.Trim();
+                        readLine = readLine.TrimEnd();
 
                         /* Linha de espaçamento */
                         if (readLine.Length.Equals(0)) continue;    
@@ -187,14 +187,15 @@ namespace LinguagensFormais
                 var newToken = new TokensFound("TOKEN.INDENT", "Indentenção", 0, Line);
                 TokensFound.Add(newToken);
                 IdentationLevel.Push(spaces);
-
             }
             /* Verifica se desidentou */
             else if (spaces < IdentationLevel.Peek())
             {
+                IdentationLevel.Pop();
+                if (spaces != IdentationLevel.Peek()) return 0; 
                 var newToken = new TokensFound("TOKEN.DEDENT", "Desindentenção", 0, Line);
                 TokensFound.Add(newToken);
-                IdentationLevel.Pop();
+                
             }
 
             return 2;

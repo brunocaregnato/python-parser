@@ -38,6 +38,7 @@ namespace LinguagensFormais
             else
             {
                 Console.WriteLine("Houve erro na análise léxica.");
+                Console.ReadLine();
             }
         }
 
@@ -73,7 +74,8 @@ namespace LinguagensFormais
                     }
                 }
 
-                Console.WriteLine("Arquivo Saida.lex gerado com sucesso!");     
+                Console.WriteLine("Arquivo Saida.lex gerado com sucesso!");
+                Console.ReadLine();
             }
             catch (Exception ex)
             {

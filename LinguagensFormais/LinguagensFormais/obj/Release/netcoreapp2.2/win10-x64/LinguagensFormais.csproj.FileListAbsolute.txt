@@ -1,0 +1,14 @@
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\bin\Release\netcoreapp2.2\win10-x64\hostpolicy.dll
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\bin\Release\netcoreapp2.2\win10-x64\hostfxr.dll
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\bin\Release\netcoreapp2.2\win10-x64\LinguagensFormais.exe
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\bin\Release\netcoreapp2.2\win10-x64\LinguagensFormais.deps.json
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\bin\Release\netcoreapp2.2\win10-x64\LinguagensFormais.runtimeconfig.json
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\bin\Release\netcoreapp2.2\win10-x64\LinguagensFormais.runtimeconfig.dev.json
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\bin\Release\netcoreapp2.2\win10-x64\LinguagensFormais.dll
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\bin\Release\netcoreapp2.2\win10-x64\LinguagensFormais.pdb
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\obj\Release\netcoreapp2.2\win10-x64\LinguagensFormais.csprojAssemblyReference.cache
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\obj\Release\netcoreapp2.2\win10-x64\LinguagensFormais.csproj.CoreCompileInputs.cache
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\obj\Release\netcoreapp2.2\win10-x64\LinguagensFormais.AssemblyInfoInputs.cache
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\obj\Release\netcoreapp2.2\win10-x64\LinguagensFormais.AssemblyInfo.cs
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\obj\Release\netcoreapp2.2\win10-x64\LinguagensFormais.dll
+C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\obj\Release\netcoreapp2.2\win10-x64\LinguagensFormais.pdb
