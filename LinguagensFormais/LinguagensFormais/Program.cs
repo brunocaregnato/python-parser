@@ -24,7 +24,27 @@ namespace LinguagensFormais
                 Console.WriteLine("Não foi possível ler o arquivo, erro: " + e);
             }
 
-            LexicalAnalysis();
+            Menu();
+        }
+
+        private static void Menu()
+        {
+
+            Console.WriteLine("----------- MENU -----------");
+            Console.WriteLine("1 - Análise Léxica");
+            Console.WriteLine("2 - Análise Sintática");
+            var valor = Console.ReadLine();
+            switch(valor)
+            {
+                case "1": LexicalAnalysis();
+                    break;
+                case "2": SyntacticalAnalysis();
+                    break;
+                default: Console.WriteLine("Opção não disponível");
+                    break;
+            }
+
+            Console.ReadLine();
         }
 
         private static void LexicalAnalysis()
@@ -40,6 +60,17 @@ namespace LinguagensFormais
                 Console.WriteLine("Houve erro na análise léxica.");
                 Console.ReadLine();
             }
+        }
+
+        private static void SyntacticalAnalysis()
+        {
+            LexicalAnalysis();
+            var syntactic = new Syntactic(Lexical.TokensFound);
+            if (syntactic.SyntacticAnalysis())
+            {
+
+            }
+
         }
 
         /**
