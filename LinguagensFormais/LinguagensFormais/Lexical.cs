@@ -107,6 +107,9 @@ namespace LinguagensFormais
                         IdentationLevel.Pop();
                     }
 
+                    /* Adiciona token de final do arquivo quando termina de encontrar outros tokens */
+                    newToken = new TokensFound("TOKEN.EOF", "EOF", TokensFound[TokensFound.Count - 1].Column + 1, TokensFound[TokensFound.Count - 1].Line);
+                    TokensFound.Add(newToken);
                 }
             }
             catch (Exception ex)

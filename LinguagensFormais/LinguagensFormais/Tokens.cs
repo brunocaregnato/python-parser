@@ -117,6 +117,7 @@ namespace LinguagensFormais
             TokenList.Add("'", "TOKEN.ASPAS_SIMPLES");
             TokenList.Add("#", "TOKEN.COMENTARIO");
             TokenList.Add("'''", "TOKEN.MULTIPLO_COMENTARIO");
+            TokenList.Add("$", "TOKEN.EOF");
         }
     }
 }
