@@ -194,11 +194,12 @@ namespace LinguagensFormais
             /* Verifica se desidentou */
             else if (spaces < IdentationLevel.Peek())
             {
-                IdentationLevel.Pop();
-                if (spaces != IdentationLevel.Peek()) return 0; 
-                var newToken = new TokensFound("TOKEN.DEDENT", "Desindentenção", 0, Line);
-                TokensFound.Add(newToken);
-                
+                while (spaces != IdentationLevel.Peek())
+                {
+                    IdentationLevel.Pop();
+                    var newToken = new TokensFound("TOKEN.DEDENT", "Desindentenção", 0, Line);
+                    TokensFound.Add(newToken);
+                }
             }
 
             return 2;
@@ -363,7 +364,7 @@ namespace LinguagensFormais
                 }
                 else
                 {
-                    newToken = new TokensFound("TK.ID", Lexeme, initialPosition, Line);
+                    newToken = new TokensFound("TOKEN.ID", Lexeme, initialPosition, Line);
                 }
 
                 TokensFound.Add(newToken);
@@ -410,7 +411,7 @@ namespace LinguagensFormais
                         break;
                     }
                 }
-                var newToken = new TokensFound("TK." + type, Lexeme, startPosition, Line);
+                var newToken = new TokensFound("TOKEN." + type, Lexeme, startPosition, Line);
                 TokensFound.Add(newToken);
             }
             /* string */
@@ -428,7 +429,7 @@ namespace LinguagensFormais
                 if (Lexeme.LastIndexOf(character).Equals(0)) //string nao foi fechado, retorna erro
                     return 0;
 
-                var newToken = new TokensFound("TK.STRING", Lexeme, startPosition, Line);
+                var newToken = new TokensFound("TOKEN.STRING", Lexeme, startPosition, Line);
                 TokensFound.Add(newToken);
                 return 1;
             }

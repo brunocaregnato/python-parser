@@ -57,8 +57,10 @@ namespace LinguagensFormais
             }
             else
             {
-                Console.WriteLine("Houve erro na análise léxica.");
+                GenerateFile();
+                Console.WriteLine("Houve erro na análise léxica, verifique o arquivo gerado.");
                 Console.ReadLine();
+                
             }
         }
 
@@ -68,7 +70,12 @@ namespace LinguagensFormais
             var syntactic = new Syntactic(Lexical.TokensFound);
             if (syntactic.SyntacticAnalysis())
             {
-
+                Console.WriteLine("Análise Sintática feita com sucesso.");
+            }
+            else
+            {
+                var error = syntactic.Error();
+                Console.WriteLine($"Erro na análise sintática! Token: {error.Token}, Linha: {error.Line}, Coluna: {error.Column}");
             }
 
         }

@@ -17,6 +17,11 @@ namespace LinguagensFormais
             Token = listOfTokens[Index].Token;
         }
 
+        public TokensFound Error()
+        {
+            return ListOfTokens[--Index];
+        }
+
         private void TokenAction(bool next = true)
         {
             /* Avancar um token */
@@ -46,17 +51,16 @@ namespace LinguagensFormais
                     if (Parameters())
                     {
                         TokenAction();
-                        if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                        if (Token.Equals("TOKEN.INDENT"))
                         {
                             TokenAction();
-                            if (Token.Equals("TOKEN.INDENT"))
+                            if (Source())
                             {
 
                             }
                         }
                     }
                 }
-
             }
             /* No python nao eh necessario comecar com uma funcao, pode-se colocar codigo direto */
             else
@@ -68,7 +72,7 @@ namespace LinguagensFormais
             }
 
 
-            return true;
+            return false;
         }
 
         /**
@@ -95,6 +99,7 @@ namespace LinguagensFormais
             {
                 while (true)
                 {
+                    TokenAction();
                     if (IsValidType(Token))
                     {
                         TokenAction();
@@ -105,17 +110,34 @@ namespace LinguagensFormais
                             {
                                 if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
                                 {
-                                    return true;
+                                    TokenAction();
+                                    if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
                                 }
                                 else
                                 {
                                     return false;
                                 }
                             }
-                            else
-                            {
-                                TokenAction();
-                            }
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    /* Funcao sem parametros */
+                    else if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
+                    {
+                        TokenAction();
+                        if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                        {
+                            return true;
                         }
                         else
                         {
@@ -134,7 +156,7 @@ namespace LinguagensFormais
 
         private bool IsValidType(string token)
         {
-            if (token.Equals("TOKEN.STRING") || token.Equals("TOKEN.INT") || token.Equals("TOKEN.FLOAT")) return true;
+            if (token.Equals("TOKEN.STRING") || token.Equals("TOKEN.INTEGER") || token.Equals("TOKEN.FLOAT")) return true;
 
             return false;
         }
@@ -143,7 +165,12 @@ namespace LinguagensFormais
         {
             if (IsIf(false))
             {
-
+                TokenAction();
+                if(Source())
+                {
+                    return true;
+                }
+                return false;
             }
             return true;
         }
@@ -167,28 +194,36 @@ namespace LinguagensFormais
                         if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
                         {
                             TokenAction();
-                            if (Token.Equals("TOKEN.INDENT"))
+                            if (Token.Equals("TOKEN.DOIS_PONTOS"))
                             {
                                 TokenAction();
-                                if (Source())
+                                if (Token.Equals("TOKEN.INDENT"))
                                 {
                                     TokenAction();
-                                    if (Token.Equals("TOKEN.DEDENT") || Token.Equals("TOKEN.ELSE"))
+                                    if (Source())
                                     {
-                                        if (Token.Equals("TOKEN.DEDENT")) TokenAction(); 
-                                        if(IsElseOrElif())
+                                        TokenAction();
+                                        if (Token.Equals("TOKEN.DEDENT") || Token.Equals("TOKEN.ELSE"))
                                         {
+                                            if (Token.Equals("TOKEN.DEDENT")) TokenAction(); 
+                                            if(IsElseOrElif())
+                                            {
+                                                return true;
+                                            }
+                                            else
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else if (Token.Equals("TOKEN.EOF"))
+                                        {
+                                            TokenAction(false);
                                             return true;
                                         }
                                         else
                                         {
                                             return false;
                                         }
-                                    }
-                                    else if (Token.Equals("TOKEN.EOF"))
-                                    {
-                                        TokenAction(false);
-                                        return true;
                                     }
                                     else
                                     {
@@ -285,15 +320,37 @@ namespace LinguagensFormais
          */
         private bool Conditions()
         {
-            if(Expression())
+            if(ConditionalExpression())
             {
                 while(true)
                 {
                     TokenAction();
                     if (Token.Equals("TOKEN.ECOMERCIAL") || Token.Equals("TOKEN.PIPE"))
                     {
+                        var tokenAux = Token;
                         TokenAction();
-                        if (!Expression())
+                        if (tokenAux.Equals("TOKEN.ECOMERCIAL"))
+                        {
+                            if (!Token.Equals("TOKEN.ECOMERCIAL"))
+                            {
+                                return false;
+                            }
+                            TokenAction();
+                        }
+                        else
+                        {
+                            if (!Token.Equals("TOKEN.PIPE"))
+                            {
+                                return false;
+                            }
+                            TokenAction();
+                        }
+
+                        if (ConditionalExpression())
+                        {
+                            return true;
+                        }
+                        else
                         {
                             return false;
                         }
@@ -303,6 +360,37 @@ namespace LinguagensFormais
                         TokenAction(false);
                         return true;
                     }
+                }
+            }
+
+            return false;
+        }
+
+        /**
+         * E -> E == E | E != E | E <= E | E >= E | E < E | E > E 
+         */
+        private bool ConditionalExpression()
+        {
+            if (Expression())
+            {
+                TokenAction();
+                if(Token.Equals("TOKEN.IGUAL_IGUAL") || Token.Equals("TOKEN.DIFERENTE") ||
+                   Token.Equals("TOKEN.MENOR_IGUAL") || Token.Equals("TOKEN.MAIOR_IGUAL") ||
+                   Token.Equals("TOKEN.MAIOR") || Token.Equals("TOKEN.MENOR"))
+                {
+                    TokenAction();
+                    if(Expression())
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
                 }
             }
 
