@@ -172,6 +172,17 @@ namespace LinguagensFormais
                 }
                 return false;
             }
+            else if (IsPlusOrMinusOperation())
+            {
+                TokenAction();
+                if (Source())
+                {
+                    return true;
+                }
+                return false;
+            }
+
+
             return true;
         }
 
@@ -467,5 +478,91 @@ namespace LinguagensFormais
             return false;
         }
 
+        /**
+         * E  -> ++E | --E | EE'
+         * E' -> ++ | -- 
+         */
+        private bool IsPlusOrMinusOperation()
+        {
+            if (Token.Equals("TOKEN.MAIS"))
+            {
+                TokenAction();
+                if (Token.Equals("TOKEN.MAIS"))
+                {
+                    TokenAction();
+                    if (Token.Equals("TOKEN.ID"))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (Token.Equals("TOKEN.MENOS"))
+            {
+                TokenAction();
+                if (Token.Equals("TOKEN.MENOS"))
+                {
+                    TokenAction();
+                    if (Token.Equals("TOKEN.ID"))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (Token.Equals("TOKEN.ID"))
+            {
+                TokenAction();
+                if (Token.Equals("TOKEN.MAIS"))
+                {
+                    TokenAction();
+                    if (Token.Equals("TOKEN.MAIS"))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        TokenAction(false);
+                        TokenAction(false);
+                        return false;
+                    }
+                }
+                else if (Token.Equals("TOKEN.MENOS"))
+                {
+                    TokenAction();
+                    if (Token.Equals("TOKEN.MENOS"))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        TokenAction(false);
+                        TokenAction(false);
+                        return false;
+                    }
+                }
+                else
+                {
+                    TokenAction(false);
+                    return false;
+                }
+            }
+
+            return false;
+        }
     }
 }
