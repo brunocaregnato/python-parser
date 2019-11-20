@@ -172,7 +172,16 @@ namespace LinguagensFormais
                 }
                 return false;
             }
-            else if (IsPlusOrMinusOperation())
+            /*else if (IsPlusOrMinusOperation())
+            {
+                TokenAction();
+                if (Source())
+                {
+                    return true;
+                }
+                return false;
+            }*/
+            else if (isWhile())
             {
                 TokenAction();
                 if (Source())
@@ -181,7 +190,15 @@ namespace LinguagensFormais
                 }
                 return false;
             }
-
+            else if (isFor())
+            {
+                TokenAction();
+                if (Source())
+                {
+                    return true;
+                }
+                return false;
+            }
 
             return true;
         }
@@ -194,7 +211,6 @@ namespace LinguagensFormais
         private bool IsIf(bool elif)
         {
             if (Token.Equals("TOKEN.IF") || elif) {
-                elif = false;
                 TokenAction();
                 if(Token.Equals("TOKEN.PARENTESES_ESQUERDO"))
                 {
@@ -221,55 +237,21 @@ namespace LinguagensFormais
                                             {
                                                 return true;
                                             }
-                                            else
-                                            {
-                                                return false;
-                                            }
                                         }
                                         else if (Token.Equals("TOKEN.EOF"))
                                         {
                                             TokenAction(false);
                                             return true;
                                         }
-                                        else
-                                        {
-                                            return false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        return false;
                                     }
                                 }
-                                else
-                                {
-                                    return false;
-                                }
-                            }
-                            else
-                            {
-                                return false;
                             }
                         }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        return false;
                     }
                 }
-                else
-                {
-                    return false;
-                }
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         private bool IsElseOrElif()
@@ -292,20 +274,10 @@ namespace LinguagensFormais
                             TokenAction(false);
                             return true;
                         }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        return false;
                     }
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
             else if (Token.Equals("TOKEN.ELIF"))
             {
@@ -313,16 +285,11 @@ namespace LinguagensFormais
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
-            else
-            {
-                TokenAction(false);
-                return true;
-            }
+
+            TokenAction(false);
+            return true;
         }
 
         /**
@@ -394,14 +361,6 @@ namespace LinguagensFormais
                     {
                         return true;
                     }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
                 }
             }
 
@@ -482,7 +441,7 @@ namespace LinguagensFormais
          * E  -> ++E | --E | EE'
          * E' -> ++ | -- 
          */
-        private bool IsPlusOrMinusOperation()
+    /* private bool IsPlusOrMinusOperation()
         {
             if (Token.Equals("TOKEN.MAIS"))
             {
@@ -562,6 +521,154 @@ namespace LinguagensFormais
                 }
             }
 
+            return false;
+        }
+    */
+
+        /**
+         * E -> While(S) Indent T Dedent
+         * S -> Condition
+         * T -> Source
+         */
+        private bool isWhile()
+        {
+            if (Token.Equals("TOKEN.WHILE"))
+            {
+                TokenAction();
+                if (Token.Equals("TOKEN.PARENTESES_ESQUERDO"))
+                {
+                    TokenAction();
+                    if (Conditions())
+                    {
+                        TokenAction();
+                        if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
+                        {
+                            TokenAction();
+                            if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                            {
+                                TokenAction();
+                                if (Token.Equals("TOKEN.INDENT"))
+                                {
+                                    TokenAction();
+                                    if (Source())
+                                    {
+                                        TokenAction();
+                                        if (Token.Equals("TOKEN.DEDENT"))
+                                        {
+                                            return true;
+                                        }
+                                        else
+                                        {
+                                            return false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        /**
+         * E -> FOR id in range(S) Indent T Dedent
+         * S -> int, int
+         * T -> Source
+         */
+        private bool isFor()
+        {
+            if (Token.Equals("TOKEN.FOR"))
+            {
+                TokenAction();
+                if (Token.Equals("TOKEN.ID"))
+                {
+                    TokenAction();
+                    if (Token.Equals("TOKEN.IN"))
+                    {
+                        TokenAction();
+                        if (Token.Equals("TOKEN.ID"))
+                        {
+                            TokenAction();
+                            if (rangeParameters())
+                            {
+                                TokenAction();
+                                if (Token.Equals("TOKEN.INDENT"))
+                                {
+                                    TokenAction();
+                                    if (Source())
+                                    {
+                                        TokenAction();
+                                        if (Token.Equals("TOKEN.DEDENT"))
+                                        {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /**
+         * Verifica se o range esta correto
+         * Exemplos: range(5), range(0,10)
+         */
+        private bool rangeParameters()
+        {
+            if (Token.Equals("TOKEN.PARENTESES_ESQUERDO"))
+            {
+                TokenAction();
+                if (Token.Equals("TOKEN.INTEGER"))
+                {
+                    TokenAction();
+                    if (Token.Equals("TOKEN.VIRGULA"))
+                    {
+                        TokenAction();
+                        if (Token.Equals("TOKEN.INTEGER"))
+                        {
+                            TokenAction();
+                            if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    else if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
+                    {
+                        return true;
+                    }
+                }
+            }
             return false;
         }
     }

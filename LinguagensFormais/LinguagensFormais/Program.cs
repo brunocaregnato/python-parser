@@ -75,7 +75,7 @@ namespace LinguagensFormais
             else
             {
                 var error = syntactic.Error();
-                Console.WriteLine($"Erro na análise sintática! Token: {error.Token}, Linha: {error.Line}, Coluna: {error.Column}");
+                Console.WriteLine($"Erro na análise sintática! Após o Token: {error.Token}, Linha: {error.Line}, Coluna: {error.Column}");
             }
 
         }
