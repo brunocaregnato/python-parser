@@ -108,10 +108,46 @@ namespace LinguagensFormais
          */
         private bool Source()
         {
-            if (IsIf(false) || isWhile() || isFor() || isFunction() || isReceivingValues())
+            if (IsIf(false))
             {
                 TokenAction();
                 if(Source())
+                {
+                    return true;
+                }
+                return false;
+            }
+            if (isWhile())
+            {
+                TokenAction();
+                if (Source())
+                {
+                    return true;
+                }
+                return false;
+            }
+            if (isFor())
+            {
+                TokenAction();
+                if (Source())
+                {
+                    return true;
+                }
+                return false;
+            }
+            if (isFunction())
+            {
+                TokenAction();
+                if (Source())
+                {
+                    return true;
+                }
+                return false;
+            }
+            if (isReceivingValues())
+            {
+                TokenAction();
+                if (Source())
                 {
                     return true;
                 }
@@ -145,6 +181,7 @@ namespace LinguagensFormais
                                 {
                                     if (isDefinition)
                                     {
+                                        TokenAction();
                                         return true;
                                     }
                                     else
@@ -208,7 +245,7 @@ namespace LinguagensFormais
                                     TokenAction();
                                     if (Source())
                                     {
-                                        TokenAction();
+                                        //TokenAction();
                                         if (Token.Equals("TOKEN.DEDENT") || Token.Equals("TOKEN.ELSE"))
                                         {
                                             if (Token.Equals("TOKEN.DEDENT")) TokenAction(); 
