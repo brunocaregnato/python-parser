@@ -29,7 +29,7 @@ namespace LinguagensFormais
                 if (Token.Equals("TOKEN.ID"))
                 {
                     TokenAction();
-                    if (isFunction(true))
+                    if (Parameters())
                     {
                         TokenAction();
                         if (Token.Equals("TOKEN.INDENT"))
@@ -162,7 +162,7 @@ namespace LinguagensFormais
          * E -> (S)
          * S -> idS | vazio
          */
-        private bool isFunction(bool isDefinition = false)
+        private bool Parameters()
         {
             if (Token.Equals("TOKEN.PARENTESES_ESQUERDO"))
             {
@@ -179,19 +179,9 @@ namespace LinguagensFormais
                             {
                                 if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
                                 {
-                                    if (isDefinition)
-                                    {
-                                        TokenAction();
-                                        return true;
-                                    }
-                                    else
-                                    {
-                                        TokenAction();
-                                        if (Token.Equals("TOKEN.DOIS_PONTOS"))
-                                        {
-                                            return true;
-                                        }
-                                    }
+                                    TokenAction();
+                                    return true;
+                                    
                                 }
                             }
                         }
@@ -199,19 +189,51 @@ namespace LinguagensFormais
                     /* Funcao sem parametros */
                     else if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
                     {
-                        if (isDefinition)
-                        {
-                            return true;
+                         return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /**
+         * Verifica se eh uma funcao
+         */
+        private bool isFunction()
+        {
+            if (Token.Equals("TOKEN.ID"))
+            {
+                TokenAction();
+                if (Token.Equals("TOKEN.PARENTESES_ESQUERDO"))
+                {
+                    TokenAction();
+                    while (true)
+                    {
+                        if (Token.Equals("TOKEN.ID")) {
+                            TokenAction();
+                            if (Token.Equals("TOKEN.VIRGULA"))
+                            {
+                                TokenAction();
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
                         else
                         {
-                            TokenAction();
-                            if (Token.Equals("TOKEN.DOIS_PONTOS"))
-                            {
-                                return true;
-                            }
+                            break;
                         }
                     }
+                    if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    TokenAction(false);
                 }
             }
 
