@@ -250,7 +250,8 @@ namespace LinguagensFormais
         {
             if (Token.Equals("TOKEN.IF") || elif) {
                 TokenAction();
-                if(Token.Equals("TOKEN.PARENTESES_ESQUERDO"))
+
+                if (Token.Equals("TOKEN.PARENTESES_ESQUERDO"))
                 {
                     TokenAction();
                     if (Conditions())
@@ -300,24 +301,27 @@ namespace LinguagensFormais
             if (Token.Equals("TOKEN.ELSE"))
             {
                 TokenAction();
-                if (Token.Equals("TOKEN.INDENT"))
+                if (Token.Equals("TOKEN.DOIS_PONTOS"))
                 {
-                    TokenAction();
-                    if (Source())
+                    TokenAction(); 
+                    if (Token.Equals("TOKEN.INDENT"))
                     {
                         TokenAction();
-                        if (Token.Equals("TOKEN.DEDENT"))
+                        if (Source())
                         {
-                            return true;
-                        }
-                        else if (Token.Equals("TOKEN.EOF"))
-                        {
-                            TokenAction(false);
-                            return true;
+                            TokenAction();
+                            if (Token.Equals("TOKEN.DEDENT"))
+                            {
+                                return true;
+                            }
+                            else if (Token.Equals("TOKEN.EOF"))
+                            {
+                                TokenAction(false);
+                                return true;
+                            }
                         }
                     }
                 }
-
                 return false;
             }
             else if (Token.Equals("TOKEN.ELIF"))
@@ -543,15 +547,19 @@ namespace LinguagensFormais
                             if (rangeParameters())
                             {
                                 TokenAction();
-                                if (Token.Equals("TOKEN.INDENT"))
+                                if (Token.Equals("TOKEN.DOIS_PONTOS"))
                                 {
                                     TokenAction();
-                                    if (Source())
+                                    if (Token.Equals("TOKEN.INDENT"))
                                     {
                                         TokenAction();
-                                        if (Token.Equals("TOKEN.DEDENT"))
+                                        if (Source())
                                         {
-                                            return true;
+                                            TokenAction();
+                                            if (Token.Equals("TOKEN.DEDENT"))
+                                            {
+                                                return true;
+                                            }
                                         }
                                     }
                                 }
