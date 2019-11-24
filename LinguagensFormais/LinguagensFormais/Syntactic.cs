@@ -37,7 +37,8 @@ namespace LinguagensFormais
                             TokenAction();
                             if (Source())
                             {
-
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -48,9 +49,14 @@ namespace LinguagensFormais
             {
                 if (Source())
                 {
-
+                    TokenAction();
+                    if (Token.Equals("EOF"))
+                    {
+                        return true;
+                    }
                 }
             }
+
 
             return false;
         }
@@ -242,47 +248,58 @@ namespace LinguagensFormais
 
         /**
          * Verifica se eh um if
-         * S ->  IF (Condicioes) Identacao Codigo Dedentacao E | IF (Condicioes) Identacao Codigo Dedentacao EF
-         * E ->  ELSE Identacao Codigo Dedentacao | vazio 
+         * S  -> IF (Condicoes) Identacao Codigo Dedentacao E | IF (Condicoes) Identacao Codigo Dedentacao EF | S'
+         * S' -> IF Condicoes Identacao Codigo Dedentacao E | IF Condicoes Identacao Codigo Dedentacao EF | S'
+         * E  -> ELSE Identacao Codigo Dedentacao | vazio 
          * EF -> ELIF S | vazio 
          */
         private bool IsIf(bool elif)
         {
+            var hasParenteses = false;
             if (Token.Equals("TOKEN.IF") || elif) {
                 TokenAction();
 
                 if (Token.Equals("TOKEN.PARENTESES_ESQUERDO"))
                 {
+                    hasParenteses = true;
                     TokenAction();
-                    if (Conditions())
+                }
+
+                if (Conditions())
+                {
+                    TokenAction();
+                    if(hasParenteses) //se abriu parenteses, precisa fechar
                     {
-                        TokenAction();
                         if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
                         {
                             TokenAction();
-                            if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+
+                    if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                    {
+                        TokenAction();
+                        if (Token.Equals("TOKEN.INDENT"))
+                        {
+                            TokenAction();
+                            if (Source())
                             {
-                                TokenAction();
-                                if (Token.Equals("TOKEN.INDENT"))
+                                if (Token.Equals("TOKEN.DEDENT") || Token.Equals("TOKEN.ELSE"))
                                 {
-                                    TokenAction();
-                                    if (Source())
+                                    if (Token.Equals("TOKEN.DEDENT")) TokenAction(); 
+                                    if(IsElseOrElif())
                                     {
-                                        //TokenAction();
-                                        if (Token.Equals("TOKEN.DEDENT") || Token.Equals("TOKEN.ELSE"))
-                                        {
-                                            if (Token.Equals("TOKEN.DEDENT")) TokenAction(); 
-                                            if(IsElseOrElif())
-                                            {
-                                                return true;
-                                            }
-                                        }
-                                        else if (Token.Equals("TOKEN.EOF"))
-                                        {
-                                            TokenAction(false);
-                                            return true;
-                                        }
+                                        return true;
                                     }
+                                }
+                                else if (Token.Equals("TOKEN.EOF"))
+                                {
+                                    TokenAction(false);
+                                    return true;
                                 }
                             }
                         }
@@ -482,38 +499,48 @@ namespace LinguagensFormais
 
         /**
          * Verifica se eh um while
-         * E -> While(S) Indent T Dedent
+         * E -> While(S) Indent T Dedent | While S Indent T Dedent
          * S -> Condition
          * T -> Source
          */
         private bool isWhile()
         {
+            var hasParenteses = false;
             if (Token.Equals("TOKEN.WHILE"))
             {
                 TokenAction();
                 if (Token.Equals("TOKEN.PARENTESES_ESQUERDO"))
                 {
+                    hasParenteses = true;
                     TokenAction();
-                    if (Conditions())
+                }
+                if (Conditions())
+                {
+                    TokenAction();
+                    if (hasParenteses) //se abriu parenteses, precisa fechar
                     {
-                        TokenAction();
                         if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
                         {
                             TokenAction();
-                            if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    TokenAction();
+                    if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                    {
+                        TokenAction();
+                        if (Token.Equals("TOKEN.INDENT"))
+                        {
+                            TokenAction();
+                            if (Source())
                             {
                                 TokenAction();
-                                if (Token.Equals("TOKEN.INDENT"))
+                                if (Token.Equals("TOKEN.DEDENT"))
                                 {
-                                    TokenAction();
-                                    if (Source())
-                                    {
-                                        TokenAction();
-                                        if (Token.Equals("TOKEN.DEDENT"))
-                                        {
-                                            return true;
-                                        }
-                                    }
+                                    return true;
                                 }
                             }
                         }
@@ -526,7 +553,8 @@ namespace LinguagensFormais
 
         /**
          * Verifica se eh um for
-         * E -> FOR id in range(S) Indent T Dedent
+         * E -> FOR id in range(S) Indent T Dedent | B
+         * B -> FOR id in STRING Indent T Dedent
          * S -> int, int
          * T -> Source
          */
@@ -541,12 +569,18 @@ namespace LinguagensFormais
                     if (Token.Equals("TOKEN.IN"))
                     {
                         TokenAction();
-                        if (Token.Equals("TOKEN.ID"))
+                        if (Token.Equals("TOKEN.ID") || Token.Equals("TOKEN.STRING")) //pode iterar sob uma string, exemplo: for a in "teste":
                         {
+                            bool isString = Token.Equals("TOKEN.STRING");
                             TokenAction();
-                            if (rangeParameters())
+
+                            if (isString || (!isString && rangeParameters()))
                             {
-                                TokenAction();
+                                if (!isString)
+                                {
+                                    TokenAction();
+                                }
+
                                 if (Token.Equals("TOKEN.DOIS_PONTOS"))
                                 {
                                     TokenAction();
@@ -555,7 +589,7 @@ namespace LinguagensFormais
                                         TokenAction();
                                         if (Source())
                                         {
-                                            TokenAction();
+                                            //TokenAction();
                                             if (Token.Equals("TOKEN.DEDENT"))
                                             {
                                                 return true;
