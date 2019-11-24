@@ -37,6 +37,9 @@ namespace LinguagensFormais
                             TokenAction();
                             if (Source())
                             {
+                                TokenAction();
+                                if (Token.Equals("EOF"))
+                                {
                                     return true;
                                 }
                             }
