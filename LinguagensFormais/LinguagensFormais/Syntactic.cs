@@ -8,13 +8,13 @@ namespace LinguagensFormais
     {
         private List<TokensFound> ListOfTokens { get; set; }
         private string Token { get; set; }
-        private int Index { get; set; }
+        private int Id { get; set; }
 
         public Syntactic(List<TokensFound> listOfTokens)
         {
             ListOfTokens = listOfTokens;
-            Index = 0;
-            Token = listOfTokens[Index].Token;
+            Id = 0;
+            Token = listOfTokens[Id].Token;
         }
 
         /**
@@ -37,10 +37,21 @@ namespace LinguagensFormais
                             TokenAction();
                             if (Source())
                             {
-                                TokenAction();
-                                if (Token.Equals("EOF"))
+                                if (Token.Equals("TOKEN.EOF"))
                                 {
                                     return true;
+                                }
+                                else if (Token.Equals("TOKEN.DEDENT"))
+                                {
+                                    TokenAction();
+                                    if (SyntacticAnalysis())
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
                                 }
                             }
                         }
@@ -52,14 +63,24 @@ namespace LinguagensFormais
             {
                 if (Source())
                 {
-                    TokenAction();
-                    if (Token.Equals("EOF"))
+                    if (Token.Equals("TOKEN.EOF"))
                     {
                         return true;
                     }
+                    else if (Token.Equals("TOKEN.DEDENT"))
+                    {
+                        TokenAction();
+                        if (SyntacticAnalysis())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
-
 
             return false;
         }
@@ -69,7 +90,7 @@ namespace LinguagensFormais
          */
         public TokensFound Error()
         {
-            return ListOfTokens[--Index];
+            return ListOfTokens[--Id];
         }
 
         /**
@@ -80,12 +101,12 @@ namespace LinguagensFormais
             /* Avancar um token */
             if (next)
             {
-                Token = ListOfTokens[++Index].Token;
+                Token = ListOfTokens[++Id].Token;
             }
             /* Voltar um token */
             else
             {
-                Token = ListOfTokens[--Index].Token;
+                Token = ListOfTokens[--Id].Token;
             }
         }
 
@@ -107,7 +128,10 @@ namespace LinguagensFormais
          */
         private bool IsValidType(string token)
         {
-            if (token.Equals("TOKEN.STRING") || token.Equals("TOKEN.INTEGER") || token.Equals("TOKEN.FLOAT")) return true;
+            if (token.Equals("TOKEN.STRING") || token.Equals("TOKEN.INTEGER") || token.Equals("TOKEN.FLOAT"))
+            {
+                return true;
+            }
 
             return false;
         }
@@ -639,6 +663,7 @@ namespace LinguagensFormais
                     }
                 }
             }
+
             return false;
         }
 
@@ -667,7 +692,6 @@ namespace LinguagensFormais
                         return true;
                     }
                 }
-
             }
 
             return false;
