@@ -1,10 +1,13 @@
 def main(integer a, string b):
+    # aqui um comentario simples
     for a in "teste":
         a = a + 1
     if (a > x && x >= b):
         a = 2
         b = 3
-    soma (a , b)
+    soma (a , b) 
+    '''aqui eh comentario
+       multiplo '''
     name = "Bruno"
     number = 7.5
     c = 3 + a	
