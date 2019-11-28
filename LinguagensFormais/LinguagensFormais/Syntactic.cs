@@ -526,7 +526,8 @@ namespace LinguagensFormais
 
         /**
          * Verifica se eh um while
-         * E -> While(S) Indent T Dedent | While S Indent T Dedent
+         * E -> While(S) Indent T Dedent  | While S Indent T Dedent | Z
+         * Z -> While(S) Indent T Dedent ELSE T | While S Indent T Dedent ELSE T
          * S -> Condition
          * T -> Source
          */
@@ -555,7 +556,6 @@ namespace LinguagensFormais
                             return false;
                         }
                     }
-                    TokenAction();
                     if (Token.Equals("TOKEN.DOIS_PONTOS"))
                     {
                         TokenAction();
@@ -563,11 +563,35 @@ namespace LinguagensFormais
                         {
                             TokenAction();
                             if (Source())
-                            {
-                                TokenAction();
+                            {   
                                 if (Token.Equals("TOKEN.DEDENT"))
                                 {
-                                    return true;
+                                    TokenAction();
+                                    if (Token.Equals("TOKEN.ELSE"))
+                                    {
+                                        TokenAction();
+                                        if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                                        {
+                                            TokenAction();
+                                            if (Token.Equals("TOKEN.INDENT"))
+                                            {
+                                                TokenAction();
+                                                if (Source())
+                                                {
+                                                    if (Token.Equals("TOKEN.DEDENT"))
+                                                    {
+                                                        return true;
+                                                    }
+                                                }
+                                            }
+                                        
+                                        }
+                                    }
+                                    else
+                                    {
+                                        TokenAction(false);
+                                        return true;    
+                                    }
                                 }
                             }
                         }
