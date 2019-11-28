@@ -186,8 +186,31 @@ namespace LinguagensFormais
                 }
                 return false;
             }
+            if (IsComment())
+            {
+                TokenAction();
+                if (Source())
+                {
+                    return true;
+                }
+                return false;
+            }
 
             return true;
+        }
+
+        /**
+         * Se for comentario, apenas verifica se eh o token e vai pro proximo
+         */
+        private bool IsComment()
+        {
+            if (Token.Equals("TOKEN.MULTIPLO_COMENTARIO"))
+            {
+                TokenAction();
+                return true;
+            }
+
+            return false;
         }
 
         /**
@@ -640,7 +663,6 @@ namespace LinguagensFormais
                                         TokenAction();
                                         if (Source())
                                         {
-                                            //TokenAction();
                                             if (Token.Equals("TOKEN.DEDENT"))
                                             {
                                                 return true;
