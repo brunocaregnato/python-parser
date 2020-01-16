@@ -1,8 +1,8 @@
-def main(integer a, string b):
+def main():
     # aqui um comentario simples
     for a in "teste":
         a = a + 1
-    if (a > x && x >= b):
+    if (a > x & x >= b):
         a = 2
         b = 3
     soma (a , b) 
@@ -15,9 +15,9 @@ def main(integer a, string b):
     recebeFunc = Function()
     exp = (14 * a - (a / c))
     c = a + b
-    if ( (a + b) > c || name == "Bruno"):
+    if ( (a + b) > c | name == "Bruno"):
         c = a - b
-    elif a < b && c != 4:
+    elif a < b & c != 4:
         c = b - a
     else:
         c = a + b
@@ -34,5 +34,5 @@ def main(integer a, string b):
         c = 5
     b = 1
 	
-def soma(integer a, integer b):
+def soma():
     result = a + b
