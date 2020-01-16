@@ -225,23 +225,18 @@ namespace LinguagensFormais
                 while (true)
                 {
                     TokenAction();
-                    if (IsValidType(Token))
+                    if (Token.Equals("TOKEN.ID"))
                     {
                         TokenAction();
-                        if (Token.Equals("TOKEN.ID"))
+                        if (!Token.Equals("TOKEN.VIRGULA"))
                         {
-                            TokenAction();
-                            if (!Token.Equals("TOKEN.VIRGULA"))
+                            if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
                             {
-                                if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
-                                {
-                                    TokenAction();
-                                    return true;
-                                    
-                                }
+                                TokenAction();
+                                return true;                                
                             }
                         }
-                    }
+                    }                    
                     /* Funcao sem parametros */
                     else if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
                     {
@@ -406,7 +401,7 @@ namespace LinguagensFormais
 
         /**
          * Verifica se eh uma condicao 
-         * Conditions -> E | && E | || E | vazio  
+         * Conditions -> E | & E | | E | vazio  
          * E -> T == T | T != T | T > T | T < T | T >= T | T <= T 
          */
         private bool Conditions()
@@ -418,25 +413,6 @@ namespace LinguagensFormais
                     TokenAction();
                     if (Token.Equals("TOKEN.ECOMERCIAL") || Token.Equals("TOKEN.PIPE"))
                     {
-                        var tokenAux = Token;
-                        TokenAction();
-                        if (tokenAux.Equals("TOKEN.ECOMERCIAL"))
-                        {
-                            if (!Token.Equals("TOKEN.ECOMERCIAL"))
-                            {
-                                return false;
-                            }
-                            TokenAction();
-                        }
-                        else
-                        {
-                            if (!Token.Equals("TOKEN.PIPE"))
-                            {
-                                return false;
-                            }
-                            TokenAction();
-                        }
-
                         if (ConditionalExpression())
                         {
                             return true;
