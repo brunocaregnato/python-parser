@@ -233,14 +233,22 @@ namespace LinguagensFormais
                             if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
                             {
                                 TokenAction();
-                                return true;                                
+                                if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                                {
+                                    return true;
+                                }                            
                             }
                         }
                     }                    
                     /* Funcao sem parametros */
                     else if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
                     {
-                         return true;
+                        TokenAction();
+
+                        if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -401,7 +409,7 @@ namespace LinguagensFormais
 
         /**
          * Verifica se eh uma condicao 
-         * Conditions -> E | & E | | E | vazio  
+         * Conditions -> E | and E | or E | vazio  
          * E -> T == T | T != T | T > T | T < T | T >= T | T <= T 
          */
         private bool Conditions()
@@ -411,8 +419,9 @@ namespace LinguagensFormais
                 while(true)
                 {
                     TokenAction();
-                    if (Token.Equals("TOKEN.ECOMERCIAL") || Token.Equals("TOKEN.PIPE"))
+                    if (Token.Equals("TOKEN.AND") || Token.Equals("TOKEN.OR"))
                     {
+                        TokenAction();
                         if (ConditionalExpression())
                         {
                             return true;
@@ -470,8 +479,7 @@ namespace LinguagensFormais
             {
                 TokenAction();
                 //Valida acao em cima do token anterior
-                if(Token.Equals("TOKEN.AND") || Token.Equals("TOKEN.OR") ||
-                   Token.Equals("TOKEN.MAIS") || Token.Equals("TOKEN.MENOS") ||
+                if(Token.Equals("TOKEN.MAIS") || Token.Equals("TOKEN.MENOS") ||
                    Token.Equals("TOKEN.VEZES") || Token.Equals("TOKEN.BARRA") ||
                    Token.Equals("TOKEN.CIRCUMFLEXO"))
                 {

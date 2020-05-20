@@ -31,3 +31,14 @@ C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\obj\Debug\netco
 C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.AssemblyInfo.cs
 C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.dll
 C:\Github\linguagens-formais\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.pdb
+D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp2.2\LinguagensFormais.deps.json
+D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp2.2\LinguagensFormais.runtimeconfig.json
+D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp2.2\LinguagensFormais.runtimeconfig.dev.json
+D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp2.2\LinguagensFormais.dll
+D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp2.2\LinguagensFormais.pdb
+D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.csprojAssemblyReference.cache
+D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.AssemblyInfoInputs.cache
+D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.AssemblyInfo.cs
+D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.dll
+D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.pdb
+D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp2.2\LinguagensFormais.genruntimeconfig.cache

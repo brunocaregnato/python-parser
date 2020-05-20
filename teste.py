@@ -2,7 +2,7 @@ def main():
     # aqui um comentario simples
     for a in "teste":
         a = a + 1
-    if (a > x & x >= b):
+    if (a > x and x >= b):
         a = 2
         b = 3
     soma (a , b) 
@@ -13,11 +13,11 @@ def main():
     c = 3 + a	
     d += i
     recebeFunc = Function()
-    exp = (14 * a - (a / c))
+    exp = (14 * a - (a / c)))
     c = a + b
-    if ( (a + b) > c | name == "Bruno"):
+    if ( (a + b) > c or name == "Bruno"):
         c = a - b
-    elif a < b & c != 4:
+    elif a < b and c != 4:
         c = b - a
     else:
         c = a + b
