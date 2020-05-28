@@ -7,6 +7,7 @@ namespace LinguagensFormais
     {
         public static string FilePath { get; set; }
         public static Lexical Lexical;
+        public static Bytecode Bytecode;
 
         static void Main(string[] args)
         {
@@ -33,12 +34,15 @@ namespace LinguagensFormais
             Console.WriteLine("----------- MENU -----------");
             Console.WriteLine("1 - Análise Léxica");
             Console.WriteLine("2 - Análise Sintática");
+            Console.WriteLine("3 - Gerar Bytecode");
             var valor = Console.ReadLine();
             switch(valor)
             {
                 case "1": LexicalAnalysis();
                     break;
                 case "2": SyntacticalAnalysis();
+                    break;
+                case "3": ByteCodeAnalysis();
                     break;
                 default: Console.WriteLine("Opção não disponível");
                     break;
@@ -80,6 +84,23 @@ namespace LinguagensFormais
 
         }
 
+        private static void ByteCodeAnalysis()
+        {
+            SyntacticalAnalysis();
+            Bytecode = new Bytecode();
+            if (Bytecode.BytecodeAnalysis(FilePath))
+            {
+                GenerateBytecodeFile();
+            }
+            else
+            {
+                GenerateBytecodeFile();
+                Console.WriteLine("Houve erro na geração do bytecode, verifique o arquivo gerado.");
+                Console.ReadLine();
+            }
+
+        }
+
         /**
          * Gera o arquivo Saida.lex
          */
@@ -113,6 +134,44 @@ namespace LinguagensFormais
                 }
 
                 Console.WriteLine("Arquivo Saida.lex gerado com sucesso!");
+                Console.ReadLine();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private static void GenerateBytecodeFile()
+        {
+            try
+            {
+                string line, address, opname, friendlyInterpretation;
+                var outputPath = FilePath.Substring(0, FilePath.LastIndexOf(Path.DirectorySeparatorChar));
+                using (StreamWriter outputFile = new StreamWriter(outputPath + @"\Bytecode.txt"))
+                {
+                    line = "| " + string.Format("{0,9}", "Linha");
+                    address = " |" + string.Format("{0,25}", "Endereço");
+                    opname = " |" + string.Format("{0,50}", "Operação");
+                    friendlyInterpretation = " | " + string.Format("{0,50}", "Interpretação Humana");
+                    var printLine = line + address + opname + friendlyInterpretation;
+                    outputFile.WriteLine(printLine);
+                    var space = new string('-', 134);
+                    outputFile.WriteLine(space);
+                    int lineAux = 0;
+                    foreach (BytecodeFound rt in Bytecode.BytecodeFounds)
+                    {                                
+                        line = rt.Line.Equals(lineAux) ? "| " + string.Format("{0,9}", " ") : "| " + string.Format("{0,9}", rt.Line);
+                        address = " |" + string.Format("{0,25}", rt.Address);
+                        opname = " |" + string.Format("{0,50}", rt.OpName);
+                        friendlyInterpretation = " | " + string.Format("{0,50}", rt.FriendlyInterpretation);
+                        printLine = line + address + opname + line + friendlyInterpretation;                        
+                        outputFile.WriteLine(printLine);
+                        lineAux = rt.Line;
+                    }
+                }
+
+                Console.WriteLine("Arquivo Bytecode.txt gerado com sucesso!");
                 Console.ReadLine();
             }
             catch (Exception ex)
