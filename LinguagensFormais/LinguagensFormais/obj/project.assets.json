@@ -8,19 +8,23 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\bruno\\.nuget\\packages\\": {}
+    "C:\\Users\\bruno.miguel\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Documentos\\GitHub\\python-parser\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj",
+      "projectUniqueName": "C:\\Github\\python-parser\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj",
       "projectName": "LinguagensFormais",
-      "projectPath": "D:\\Documentos\\GitHub\\python-parser\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj",
-      "packagesPath": "C:\\Users\\bruno\\.nuget\\packages\\",
-      "outputPath": "D:\\Documentos\\GitHub\\python-parser\\LinguagensFormais\\LinguagensFormais\\obj\\",
+      "projectPath": "C:\\Github\\python-parser\\LinguagensFormais\\LinguagensFormais\\LinguagensFormais.csproj",
+      "packagesPath": "C:\\Users\\bruno.miguel\\.nuget\\packages\\",
+      "outputPath": "C:\\Github\\python-parser\\LinguagensFormais\\LinguagensFormais\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "C:\\Users\\bruno\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\bruno.miguel\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -58,7 +62,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -10,3 +10,15 @@ D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug
 D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp3.1\LinguagensFormais.dll
 D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp3.1\LinguagensFormais.pdb
 D:\Documentos\GitHub\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp3.1\LinguagensFormais.genruntimeconfig.cache
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp3.1\LinguagensFormais.csprojAssemblyReference.cache
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp3.1\LinguagensFormais.AssemblyInfoInputs.cache
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp3.1\LinguagensFormais.AssemblyInfo.cs
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp3.1\LinguagensFormais.dll
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp3.1\LinguagensFormais.pdb
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp3.1\LinguagensFormais.exe
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp3.1\LinguagensFormais.deps.json
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp3.1\LinguagensFormais.runtimeconfig.json
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp3.1\LinguagensFormais.runtimeconfig.dev.json
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp3.1\LinguagensFormais.dll
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\bin\Debug\netcoreapp3.1\LinguagensFormais.pdb
+C:\Github\python-parser\LinguagensFormais\LinguagensFormais\obj\Debug\netcoreapp3.1\LinguagensFormais.genruntimeconfig.cache

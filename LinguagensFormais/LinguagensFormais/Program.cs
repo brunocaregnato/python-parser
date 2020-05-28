@@ -12,7 +12,7 @@ namespace LinguagensFormais
         static void Main(string[] args)
         {
 
-            var dir = "D:\\temp\\";
+            var dir = "C:\\temp\\";
             Console.WriteLine("Digite o caminho a ser lido em " + dir + ":");
             FilePath = dir + Console.ReadLine();
 
@@ -87,8 +87,8 @@ namespace LinguagensFormais
         private static void ByteCodeAnalysis()
         {
             SyntacticalAnalysis();
-            Bytecode = new Bytecode();
-            if (Bytecode.BytecodeAnalysis(FilePath))
+            Bytecode = new Bytecode(Lexical.TokensFound);
+            if (Bytecode.BytecodeAnalysis())
             {
                 GenerateBytecodeFile();
             }
@@ -150,10 +150,10 @@ namespace LinguagensFormais
                 var outputPath = FilePath.Substring(0, FilePath.LastIndexOf(Path.DirectorySeparatorChar));
                 using (StreamWriter outputFile = new StreamWriter(outputPath + @"\Bytecode.txt"))
                 {
-                    line = "| " + string.Format("{0,9}", "Linha");
-                    address = " |" + string.Format("{0,25}", "Endereço");
-                    opname = " |" + string.Format("{0,50}", "Operação");
-                    friendlyInterpretation = " | " + string.Format("{0,50}", "Interpretação Humana");
+                    line = "| " + string.Format("{0,5}", "Linha");
+                    address = " |" + string.Format("{0,20}", "Endereço");
+                    opname = " |" + string.Format("{0,30}", "Operação");
+                    friendlyInterpretation = " | " + string.Format("{0,30}", "Interpretação Humana");
                     var printLine = line + address + opname + friendlyInterpretation;
                     outputFile.WriteLine(printLine);
                     var space = new string('-', 134);
@@ -161,11 +161,11 @@ namespace LinguagensFormais
                     int lineAux = 0;
                     foreach (BytecodeFound rt in Bytecode.BytecodeFounds)
                     {                                
-                        line = rt.Line.Equals(lineAux) ? "| " + string.Format("{0,9}", " ") : "| " + string.Format("{0,9}", rt.Line);
-                        address = " |" + string.Format("{0,25}", rt.Address);
-                        opname = " |" + string.Format("{0,50}", rt.OpName);
-                        friendlyInterpretation = " | " + string.Format("{0,50}", rt.FriendlyInterpretation);
-                        printLine = line + address + opname + line + friendlyInterpretation;                        
+                        line = rt.Line.Equals(lineAux) ? "| " + string.Format("{0,5}", " ") : "| " + string.Format("{0,5}", rt.Line);
+                        address = " |" + string.Format("{0,20}", rt.Address);
+                        opname = " |" + string.Format("{0,30}", rt.OpName);
+                        friendlyInterpretation = " | " + string.Format("{0,30}", rt.FriendlyInterpretation);
+                        printLine = line + address + opname + friendlyInterpretation;                        
                         outputFile.WriteLine(printLine);
                         lineAux = rt.Line;
                     }
