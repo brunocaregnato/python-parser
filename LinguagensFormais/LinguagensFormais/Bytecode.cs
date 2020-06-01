@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace LinguagensFormais
@@ -19,42 +20,95 @@ namespace LinguagensFormais
         {
             BytecodeFounds = new List<BytecodeFound>();
             OperationsName = new OperationsName();
+
             var address = 0;
+            var lastLine = TokensList.Last();
 
-            foreach (TokensFound token in TokensList)
+            for(int line = 1; line <= lastLine.Line; line++)
             {
-                var bytecodeFound = new BytecodeFound
+                foreach(var found in GetObjects(line))
                 {
-                    Line = token.Line,
-                    Address = address                    
-                };
+                    var bytecodeFound = new BytecodeFound
+                    {
+                        Line = line,
+                        Address = address,
+                        FriendlyInterpretation = found.FriendlyInterpretation,
+                        OpName = found.OpName
+                    };
 
-                if (OperationsName.OperationsNameList.TryGetValue(token.Token, out string opName))
-                {
-                    bytecodeFound.OpName = opName;
-                }
-
-                bytecodeFound.FriendlyInterpretation = GetFriendlyInterpretation(token.Line, token.Token);
-
-                BytecodeFounds.Add(bytecodeFound);
-
-                address += 2;
+                    BytecodeFounds.Add(bytecodeFound);
+                    address += 2;
+                }               
             }
 
             return true;
         }
 
-        private string GetFriendlyInterpretation(int line, string tokenFound)
+        private List<BytecodeFound> GetObjects(int line)
         {
             var tokens = TokensList.FindAll(x => x.Line.Equals(line));
-            int id = 0;
-            foreach(var token in tokens)
+            var bytecodeFoundList = new List<BytecodeFound>();
+
+            for(int index = tokens.Count - 1; index >= 0; index--)
             {
-                
+                var bytecodeFound = new BytecodeFound();
+
+                if (tokens[index].Token.Equals("TOKEN.STRING") || tokens[index].Token.Equals("TOKEN.FLOAT") 
+                    || tokens[index].Token.Equals("TOKEN.INTEGER"))
+                {
+                    OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
+                    bytecodeFound.OpName = opName;
+                    bytecodeFound.FriendlyInterpretation = tokens[index].Lexema;
+                    bytecodeFoundList.Add(bytecodeFound);
+                    continue;
+                }
+
+                if (tokens[index].Token.Equals("TOKEN.IGUAL"))
+                {
+                    var indexAux = index - 1;
+                    if (indexAux >= 0 && tokens[indexAux].Token.Equals("TOKEN.ID"))
+                    {
+                        OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
+                        bytecodeFound.OpName = opName;
+                        bytecodeFound.FriendlyInterpretation = tokens[indexAux].Lexema;
+                        bytecodeFoundList.Add(bytecodeFound);
+                        continue;
+                    }
+                }
+
+                if (tokens[index].Token.Equals("TOKEN.ID"))
+                {
+                    var indexAux = index - 1;
+                    if (indexAux >= 0 && tokens[indexAux].Token.Equals("TOKEN.IGUAL"))
+                    {
+                        OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
+                        bytecodeFound.OpName = opName;
+                        bytecodeFound.FriendlyInterpretation = tokens[index].Lexema;
+                        bytecodeFoundList.Add(bytecodeFound);
+                        continue;
+                    }
+                    else if (indexAux >= 0 && tokens[indexAux].Token.Equals("TOKEN.MAIS"))
+                    {
+                        OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
+                        bytecodeFound.OpName = opName;
+                        bytecodeFound.FriendlyInterpretation = tokens[index].Lexema;
+                        bytecodeFoundList.Add(bytecodeFound);
+                        continue;
+                    }
+                }
+
+                if (tokens[index].Token.Equals("TOKEN.MAIS"))
+                {
+                    OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
+                    bytecodeFound.OpName = opName;
+                    bytecodeFoundList.Add(bytecodeFound);
+                    continue;
+                }
+
+
             }
 
-
-            return "";
+            return bytecodeFoundList;
         }
 
 

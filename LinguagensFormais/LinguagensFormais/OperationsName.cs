@@ -25,6 +25,7 @@ namespace LinguagensFormais
             OperationsNameList.Add("TOKEN.STRING", "LOAD_CONST");
             OperationsNameList.Add("TOKEN.MAIS", "BINARY_ADD");
             OperationsNameList.Add("TOKEN.IGUAL", "STORE_FAST");
+            OperationsNameList.Add("TOKEN.ID", "LOAD_FAST");
         }
     }
 }
