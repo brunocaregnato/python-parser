@@ -27,6 +27,13 @@ namespace LinguagensFormais
             OperationsNameList.Add("TOKEN.IGUAL", "STORE_FAST");
             OperationsNameList.Add("TOKEN.ID", "LOAD_FAST");
             OperationsNameList.Add("TOKEN.EOF", "RETURN_VALUE");
+            OperationsNameList.Add("TOKEN.IF", "POP_JUMP_IF_FALSE");
+            OperationsNameList.Add("TOKEN.ELIF", "POP_JUMP_IF_FALSE");
+            OperationsNameList.Add("TOKEN.MAIOR", "COMPARE_OP");
+            OperationsNameList.Add("TOKEN.MENOR", "COMPARE_OP");
+            OperationsNameList.Add("TOKEN.IGUAL", "COMPARE_OP");
+
+
         }
     }
 }

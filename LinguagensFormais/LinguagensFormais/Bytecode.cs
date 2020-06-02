@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LinguagensFormais
 {
@@ -38,7 +39,7 @@ namespace LinguagensFormais
 
                     BytecodeFounds.Add(bytecodeFound);
                     address += 2;
-                }               
+                }
             }
 
             return true;
@@ -47,68 +48,52 @@ namespace LinguagensFormais
         private List<BytecodeFound> GetObjects(int line)
         {
             var tokens = TokensList.FindAll(x => x.Line.Equals(line));
-            var bytecodeFoundList = new List<BytecodeFound>();
-
-            int index = 1;
-
-            //se for uma atribuicao, precisa avaliar a expressao da esquerda para direita
-            int size = 1;
-            if (tokens[index - 1].Token.Equals("TOKEN.ID") && tokens[index].Token.Equals("TOKEN.IGUAL"))
+            
+            //se for um assign, precisa avaliar a expressao da esquerda para direita depois do =
+            if (tokens[0].Token.Equals("TOKEN.ID") && tokens[1].Token.Equals("TOKEN.IGUAL"))
             {
-                for (index = 2; index < tokens.Count; index += size)
-                {
-                    size = 0;
-                    var list = GetBytecodeFound(tokens, index);
-                    if (list != null)
-                    {
-                        list.ForEach(bytecode =>
-                        {
-                            size++;
-                            bytecodeFoundList.Add(bytecode);
-                        });
-                    }
-                    else size++;
+                return IsAssign(tokens);               
+            } 
 
+            return null;
+        }
+
+
+        private List<BytecodeFound> IsAssign(List<TokensFound> tokens)
+        {
+            var bytecodeFoundList = new List<BytecodeFound>();
+            int size = 1;
+            for (int index = 2; index < tokens.Count; index += size)
+            {
+                size = 0;
+                var list = GetBytecodeFound(tokens, index);
+                if (list != null)
+                {
+                    list.ForEach(bytecode =>
+                    {
+                        size++;
+                        bytecodeFoundList.Add(bytecode);
+                    });
                 }
-
-                GetBytecodeFound(tokens, 1).ForEach(bytecode =>
+                else
                 {
-                    bytecodeFoundList.Add(bytecode);
-                });
-
-                if (tokens[tokens.Count - 1].Token.Equals("TOKEN.EOF"))
-                {
-                    OperationsName.OperationsNameList.TryGetValue(tokens[tokens.Count - 1].Token, out string opName);
-                    var bytecodeFound = new BytecodeFound
-                    {
-                        OpName = opName
-                    };
-                    bytecodeFoundList.Add(bytecodeFound);
+                    size++;
                 }
             }
-            else
-            {
-                for (index = tokens.Count - 1; index >= 0; index--)
-                {
-                    var list = GetBytecodeFound(tokens, index);
-                    if (list != null)
-                    {
-                        list.ForEach(bytecode =>
-                        {
-                            size++;
-                            bytecodeFoundList.Add(bytecode);
-                        });
-                    }
-                    else size++;
-                }
 
-                if (tokens[tokens.Count - 1].Token.Equals("TOKEN.EOF"))
+            GetBytecodeFound(tokens, 1).ForEach(bytecode =>
+            {
+                bytecodeFoundList.Add(bytecode);
+            });
+
+            if (tokens[tokens.Count - 1].Token.Equals("TOKEN.EOF"))
+            {
+                OperationsName.OperationsNameList.TryGetValue(tokens[tokens.Count - 1].Token, out string opName);
+                var bytecodeFound = new BytecodeFound
                 {
-                    OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
-                    var bytecodeFound = new BytecodeFound();
-                    bytecodeFound.OpName = opName;
-                    bytecodeFoundList.Add(bytecodeFound);
-                }
+                    OpName = opName
+                };
+                bytecodeFoundList.Add(bytecodeFound);
             }
 
             return bytecodeFoundList;

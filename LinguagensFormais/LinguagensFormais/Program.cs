@@ -12,7 +12,7 @@ namespace LinguagensFormais
         static void Main(string[] args)
         {
 
-            var dir = "D:\\temp\\";
+            var dir = "C:\\temp\\";
             Console.WriteLine("Digite o caminho a ser lido em " + dir + ":");
             FilePath = dir + Console.ReadLine();
 
