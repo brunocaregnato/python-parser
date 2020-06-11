@@ -23,16 +23,33 @@ namespace LinguagensFormais
             OperationsNameList.Add("TOKEN.INTEGER", "LOAD_CONST");
             OperationsNameList.Add("TOKEN.FLOAT", "LOAD_CONST");
             OperationsNameList.Add("TOKEN.STRING", "LOAD_CONST");
-            OperationsNameList.Add("TOKEN.MAIS", "BINARY_ADD");
             OperationsNameList.Add("TOKEN.IGUAL", "STORE_FAST");
             OperationsNameList.Add("TOKEN.ID", "LOAD_FAST");
             OperationsNameList.Add("TOKEN.EOF", "RETURN_VALUE");
+
             OperationsNameList.Add("TOKEN.IF", "POP_JUMP_IF_FALSE");
             OperationsNameList.Add("TOKEN.ELIF", "POP_JUMP_IF_FALSE");
+            OperationsNameList.Add("TOKEN.AND", "POP_JUMP_IF_FALSE");
+            OperationsNameList.Add("TOKEN.OR", "POP_JUMP_IF_TRUE");
+
             OperationsNameList.Add("TOKEN.MAIOR", "COMPARE_OP");
             OperationsNameList.Add("TOKEN.MENOR", "COMPARE_OP");
-            OperationsNameList.Add("TOKEN.IGUAL", "COMPARE_OP");
+            OperationsNameList.Add("TOKEN.IGUAL_IGUAL", "COMPARE_OP");
 
+            /* Operações Binárias */
+            OperationsNameList.Add("TOKEN.MAIS", "BINARY_ADD");
+            OperationsNameList.Add("TOKEN.MENOS", "BINARY_SUBTRACT");
+            OperationsNameList.Add("TOKEN.VEZES", "BINARY_MULTIPLY");
+            OperationsNameList.Add("TOKEN.BARRA", "BINARY_TRUE_DIVIDE");
+            OperationsNameList.Add("TOKEN.NOME_PARAMETRO", "BINARY_POWER");
+            OperationsNameList.Add("TOKEN.ARROBA", "BINARY_MATRIX_MULTIPLY");
+            OperationsNameList.Add("TOKEN.BARRA_DUPLA", "BINARY_FLOOR_DIVIDE");
+            OperationsNameList.Add("TOKEN.PORCENTO", "BINARY_MODULO");
+            OperationsNameList.Add("TOKEN.SHIFT_LEFT", "BINARY_LSHIFT");
+            OperationsNameList.Add("TOKEN.SHIFT_RIGHT", "BINARY_RSHIFT");
+            OperationsNameList.Add("TOKEN.ECOMERCIAL", "BINARY_AND");
+            OperationsNameList.Add("TOKEN.PIPE", "BINARY_OR");
+            OperationsNameList.Add("TOKEN.CIRCUMFLEXO", "BINARY_XOR");
 
         }
     }
