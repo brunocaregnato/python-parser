@@ -9,6 +9,7 @@ namespace LinguagensFormais
         public int Line { get; set; }
         public int Address { get; set; }
         public string OpName { get; set; }
+        public string Argument { get; set; }
         public string FriendlyInterpretation { get; set; }
     }
 }
