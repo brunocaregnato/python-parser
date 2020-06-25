@@ -342,8 +342,6 @@ namespace LinguagensFormais
                 if (indexAux >= 0 && tokens[indexAux].Token.Equals("TOKEN.ID"))
                 {
                     OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
-                    //bytecodeFound.OpName = opName;
-                    //bytecodeFound.FriendlyInterpretation = tokens[indexAux].Lexema;
                     bytecodeFoundList.Add(CreateBytecodeFoundObject(opName, tokens[indexAux].Lexema));
                     return bytecodeFoundList;
                 }
@@ -355,21 +353,15 @@ namespace LinguagensFormais
                 if ((indexAux >= 0 && tokens[indexAux].Token.Equals("TOKEN.IGUAL")) || tokens[index + 1].Token.Equals("TOKEN.IGUAL"))
                 {
                     OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
-                    //bytecodeFound.OpName = opName;
-                    //bytecodeFound.FriendlyInterpretation = tokens[index].Lexema;
                     bytecodeFoundList.Add(CreateBytecodeFoundObject(opName, tokens[index].Lexema));
                     return bytecodeFoundList;
                 }
                 else if ((indexAux >= 0 && tokens[indexAux].Token.Equals("TOKEN.MAIS")) || tokens[index + 1].Token.Equals("TOKEN.MAIS"))
                 {
                     OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
-                    //bytecodeFound.OpName = opName;
-                    //bytecodeFound.FriendlyInterpretation = tokens[index].Lexema;
                     bytecodeFoundList.Add(CreateBytecodeFoundObject(opName, tokens[index].Lexema));
 
-                    //bytecodeFound = new BytecodeFound();
                     OperationsName.OperationsNameList.TryGetValue(index >= 0 ? tokens[indexAux].Token : tokens[index + 1].Token, out opName);
-                    //bytecodeFound.OpName = opName;
                     bytecodeFoundList.Add(CreateBytecodeFoundObject(opName));
 
                     return bytecodeFoundList;
@@ -381,14 +373,10 @@ namespace LinguagensFormais
                 if (tokens[index + 1].Token.Equals("TOKEN.ID"))
                 {
                     OperationsName.OperationsNameList.TryGetValue(tokens[index + 1].Token, out string opName2);
-                    //bytecodeFound.OpName = opName2;
-                    //bytecodeFound.FriendlyInterpretation = tokens[index + 1].Lexema;
                     bytecodeFoundList.Add(CreateBytecodeFoundObject(opName2, tokens[index + 1].Lexema));
-                    //bytecodeFound = new BytecodeFound();
                 }
 
                 OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
-                //bytecodeFound.OpName = opName;
                 bytecodeFoundList.Add(CreateBytecodeFoundObject(opName));
                 return bytecodeFoundList;
             }
@@ -474,11 +462,11 @@ namespace LinguagensFormais
             return null;
         }
 
+        
         private List<BytecodeFound> IsWhile(List<TokensFound> tokens)
         {
             var bytecodeFoundList = new List<BytecodeFound>();
             Size = 1;
-            //WhileStack.Push(ValueIfToForward);
 
             for (int index = 0; index < tokens.Count; index += Size)
             {
