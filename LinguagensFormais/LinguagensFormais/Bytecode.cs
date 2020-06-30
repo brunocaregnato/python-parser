@@ -15,7 +15,10 @@ namespace LinguagensFormais
         private int IdentPrevious { get; set; }
         private Stack<int> WhileLevel { get; set; } 
         private int WhileCounter { get; set; }
+        private Stack<int> ForLevel { get; set; }
+        private int ForCounter { get; set; }
         private int BlockSize { get; set; }
+
 
         private TokensFound LastLine { get; set; }
 
@@ -32,6 +35,7 @@ namespace LinguagensFormais
             LineArgumentsList = new List<int>();
             IdentLevel = new Stack<int>();
             WhileLevel = new Stack<int>();
+            ForLevel = new Stack<int>();
 
             var address = 0;
             LastLine = TokensList.Last();
@@ -55,54 +59,87 @@ namespace LinguagensFormais
 
             }
 
-            int setupLoop = 0, setupLoopAux = 0, whileLoop = 0;
+            int setupLoopWhile = 0, setupLoopWhileAux = 0, whileLoop = 0, forLoop = 0, setupLoopFor = 0, setupLoopForAux = 0;
 
             //Ajusta argumentos dos jumps       
             var withoutArguments = BytecodeFounds.Where(x => x.Argument.Trim().Equals("")).ToList();
-            withoutArguments.ForEach(argument =>
+            if(withoutArguments != null)
             {
-                var name = argument.OpName;
+                withoutArguments.ForEach(argument =>
+                {
+                    var name = argument.OpName;
                 
-                if (name.Contains("POP_JUMP") || name.Contains("JUMP"))
-                {
-                    if(LineArgumentsList.Count > 0)
+                    if (name.Contains("POP_JUMP") || name.Contains("JUMP"))
                     {
-                        var line = LineArgumentsList.First();
-                        var firstChar = BytecodeFounds.Where(x => x.Line.Equals(line) && !x.OpName.Contains("JUMP")).FirstOrDefault();
-                        if(firstChar != null)
+                        if(LineArgumentsList.Count > 0)
                         {
-                            if (firstChar.OpName.Equals("POP_BLOCK") && setupLoop != setupLoopAux)
+                            var line = LineArgumentsList.First();
+                            var firstChar = BytecodeFounds.Where(x => x.Line.Equals(line) && !x.OpName.Contains("JUMP")).FirstOrDefault();
+                            if(firstChar != null)
                             {
-                                setupLoopAux = setupLoop;
-                                var popBlock = BytecodeFounds.Where(x => x.OpName.Contains("POP_BLOCK")).ElementAt(--WhileCounter);
-                                argument.Argument = popBlock.Address.ToString();
+                                if (firstChar.OpName.Contains("POP_BLOCK"))
+                                {
+                                    if(firstChar.OpName.Equals("POP_BLOCK_WHILE") && !setupLoopWhile.Equals(setupLoopWhileAux)) 
+                                    { 
+                                        setupLoopWhileAux = setupLoopWhile;
+                                        var popBlock = BytecodeFounds.Where(x => x.OpName.Equals("POP_BLOCK_WHILE")).ElementAt(--WhileCounter);
+                                        argument.Argument = popBlock.Address.ToString();
+                                    }
+                                    else if (firstChar.OpName.Equals("POP_BLOCK_FOR") && !setupLoopFor.Equals(setupLoopForAux))
+                                    {
+                                        setupLoopForAux = setupLoopFor;
+                                        var popBlock = BytecodeFounds.Where(x => x.OpName.Equals("POP_BLOCK_FOR")).ElementAt(--ForCounter);
+                                        argument.Argument = popBlock.Address.ToString();
+                                    }
+                                }
+                                
+                                else if (name.Contains("POP_JUMP"))
+                                {
+                                    argument.Argument = firstChar.Address.ToString();
+                                }
+                                else if (name.Equals("JUMP_FORWARD"))
+                                {
+                                    argument.Argument = "0";
+                                    argument.FriendlyInterpretation = "to " + firstChar.Address.ToString();
+                                }
+            
                             }
-                            else if (name.Contains("POP_JUMP"))
-                            {
-                                argument.Argument = firstChar.Address.ToString();
-                            }
-                            else if (name.Equals("JUMP_FORWARD"))
-                            {
-                                argument.Argument = "0";
-                                argument.FriendlyInterpretation = "to " + firstChar.Address.ToString();
-                            }
-
+            
+                            LineArgumentsList.RemoveAt(0);
                         }
-
-                        LineArgumentsList.RemoveAt(0);
                     }
-                }
-                else if (name.Contains("SETUP"))
-                {
-                    setupLoop++;
-                    var popBlock = BytecodeFounds.Where(x => x.OpName.Contains("POP_BLOCK")).ElementAt(whileLoop++);
-                    argument.FriendlyInterpretation = "to " + (popBlock.Address).ToString(); //sempre no do pop block
-                    argument.Argument = (popBlock.Address - 2).ToString(); //sempre antes do jump_absolute
-                }
-            });
+                    else if (name.Equals("SETUP_LOOP_WHILE"))
+                    {
+                        setupLoopWhile++;
+                        argument.OpName = "SETUP_LOOP";
+                        var popBlock = BytecodeFounds.Where(x => x.OpName.Equals("POP_BLOCK_WHILE")).ElementAt(whileLoop++);
+                        argument.FriendlyInterpretation = "to " + (popBlock.Address).ToString(); //sempre no do pop block
+                        argument.Argument = (popBlock.Address - 2).ToString(); //sempre antes do jump_absolute
+                    }
+                    else if (name.Equals("SETUP_LOOP_FOR"))
+                    {
+                        setupLoopFor++;
+                        argument.OpName = "SETUP_LOOP";
+                        var popBlock = BytecodeFounds.Where(x => x.OpName.Equals("POP_BLOCK_FOR")).ElementAt(forLoop++);
+                        argument.FriendlyInterpretation = "to " + (popBlock.Address).ToString(); //sempre no do pop block
+                        argument.Argument = (popBlock.Address - 2).ToString(); //sempre antes do jump_absolute
+                    }
+                    else if (name.Equals("FOR_ITER"))
+                    {
+                        var popBlock = BytecodeFounds.Where(x => x.OpName.Equals("POP_BLOCK_FOR")).ElementAt(forLoop - 1);
+                        argument.FriendlyInterpretation = "to " + (popBlock.Address).ToString(); //sempre no do pop block
+                    }
+                });
+            }
+
+            //ajusta os pop_block
+            BytecodeFounds.Where(x => x.OpName.Contains("POP_BLOCK")).ToList().ForEach(popblock => popblock.OpName = "POP_BLOCK");
 
             //ajusta bloco do EOF
-            BytecodeFounds.Where(x => x.Line.Equals(LastLine.Line)).ToList().ForEach(block => block.Line--);
+            if (BytecodeFounds.Where(x => x.Line.Equals(LastLine.Line)).Count().Equals(2))
+            {
+                BytecodeFounds.Where(x => x.Line.Equals(LastLine.Line)).ToList().ForEach(block => block.Line--);
+            }
 
             return true;
         }
@@ -171,18 +208,44 @@ namespace LinguagensFormais
                         list.Add(new BytecodeFound
                         {
                             OpName = "JUMP_ABSOLUTE",
-                            Argument = ""
+                            Argument = "",
+                            Line = line - 1
                         });
                     }
 
                     list.Add(new BytecodeFound
                     {
-                        OpName = "POP_BLOCK",
-                        Argument = ""
+                        OpName = "POP_BLOCK_WHILE",
+                        Argument = "",
+                        Line = line - 1
                     });
 
                     WhileLevel.Pop();
                     WhileCounter++;
+                }
+                else if (ForLevel.Count > 0 && ForLevel.Count != ForCounter)
+                {
+                    InsertIntoLineArgumentsList(actualLine, IdentLevel.Count);
+
+                    if (ForLevel.Count == 1)
+                    {
+                        list.Add(new BytecodeFound
+                        {
+                            OpName = "JUMP_ABSOLUTE",
+                            Argument = "",
+                            Line = line - 1
+                        });
+                    }
+
+                    list.Add(new BytecodeFound
+                    {
+                        OpName = "POP_BLOCK_FOR",
+                        Argument = "",
+                        Line = line - 1
+                    });
+
+                    ForLevel.Pop();
+                    ForCounter++;
                 }
                 else if(!tokens[index].Token.Equals("TOKEN.DEDENT") && !tokens[index].Token.Equals("TOKEN.EOF"))
                 {
@@ -220,6 +283,11 @@ namespace LinguagensFormais
             else if (tokens[index].Token.Equals("TOKEN.WHILE"))
             {
                 IsWhile(tokens, index).ForEach(bytecode => list.Add(bytecode));
+                return list;
+            }
+            else if (tokens[index].Token.Equals("TOKEN.FOR"))
+            {
+                IsFor(tokens, index).ForEach(bytecode => list.Add(bytecode));
                 return list;
             }
             else if (tokens[index].Token.Equals("TOKEN.EOF"))
@@ -489,6 +557,48 @@ namespace LinguagensFormais
             }
 
             bytecodeFoundList.Add(CreateBytecodeFoundObject("POP_JUMP_IF_FALSE"));
+
+            return bytecodeFoundList;
+        }
+
+        private List<BytecodeFound> IsFor(List<TokensFound> tokens, int indented = 0)
+        {
+            var bytecodeFoundList = new List<BytecodeFound>();
+            ForLevel.Push(tokens[indented].Line);
+
+            OperationsName.OperationsNameList.TryGetValue(tokens[indented].Token, out string opName);
+            bytecodeFoundList.Add(CreateBytecodeFoundObject(opName));
+
+            OperationsName.OperationsNameList.TryGetValue(tokens[indented + 3].Token, out opName);
+            bytecodeFoundList.Add(CreateBytecodeFoundObject(opName, tokens[indented + 3].Lexema));
+
+            OperationsName.OperationsNameList.TryGetValue(tokens[indented + 5].Token, out opName);
+            bytecodeFoundList.Add(CreateBytecodeFoundObject(opName, tokens[indented + 5].Lexema));
+                        
+            var bytecode = new BytecodeFound()
+            {
+                OpName = "CALL_FUNCTION",
+                FriendlyInterpretation = "1 positional, 0 keyword pair",
+                Argument = ""
+            };
+            bytecodeFoundList.Add(bytecode);
+
+            bytecode = new BytecodeFound()
+            {
+                OpName = "GET_ITER",
+                Argument = ""
+            };
+            bytecodeFoundList.Add(bytecode);
+
+            bytecode = new BytecodeFound()
+            {
+                OpName = "FOR_ITER",
+                Argument = ""
+            };
+            bytecodeFoundList.Add(bytecode);
+
+            OperationsName.OperationsNameList.TryGetValue(tokens[indented + 1].Token, out opName);
+            bytecodeFoundList.Add(CreateBytecodeFoundObject(opName, tokens[indented + 1].Lexema));
 
             return bytecodeFoundList;
         }

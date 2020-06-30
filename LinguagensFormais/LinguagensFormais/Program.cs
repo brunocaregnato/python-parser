@@ -160,7 +160,7 @@ namespace LinguagensFormais
                     int lineAux = 0;
                     foreach (BytecodeFound rt in Bytecode.BytecodeFounds)
                     {                                
-                        if(rt.OpName.Contains("JUMP") || rt.OpName.Equals("RETURN_VALUE"))
+                        if(rt.OpName.Equals("JUMP_FORWARD") || rt.OpName.Equals("RETURN_VALUE"))
                         {
                             line = "| " +  string.Format("{0,5}", " ");
                             address = " |" + string.Format("{0,10}", rt.Address);

@@ -40,7 +40,12 @@ namespace LinguagensFormais
             OperationsNameList.Add("TOKEN.DIFERENTE", "COMPARE_OP");
 
             /* WHILE */
-            OperationsNameList.Add("TOKEN.WHILE", "SETUP_LOOP");
+            OperationsNameList.Add("TOKEN.WHILE", "SETUP_LOOP_WHILE");
+
+            /* FOR */
+            OperationsNameList.Add("TOKEN.FOR", "SETUP_LOOP_FOR");
+            OperationsNameList.Add("TOKEN.RANGE", "LOAD_GLOBAL");
+
 
             /* Operações Binárias */
             OperationsNameList.Add("TOKEN.MAIS", "BINARY_ADD");
