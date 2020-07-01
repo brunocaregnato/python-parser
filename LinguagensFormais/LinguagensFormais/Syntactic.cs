@@ -79,6 +79,18 @@ namespace LinguagensFormais
                             return false;
                         }
                     }
+                    else if (Token.Equals("TOKEN.INDENT"))
+                    {
+                        TokenAction();
+                        if (SyntacticAnalysis())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
 
@@ -195,6 +207,24 @@ namespace LinguagensFormais
                 }
                 return false;
             }
+            if (IsReturn())
+            {
+                TokenAction();
+                if (Source())
+                {
+                    return true;
+                }
+                return false;
+            }
+            if (Definition())
+            {
+                TokenAction();
+                if (Source())
+                {
+                    return true;
+                }
+                return false;
+            }
 
             return true;
         }
@@ -207,6 +237,16 @@ namespace LinguagensFormais
             if (Token.Equals("TOKEN.MULTIPLO_COMENTARIO"))
             {
                 TokenAction();
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsReturn()
+        {
+            if (Token.Equals("TOKEN.RETURN"))
+            {
                 return true;
             }
 
@@ -287,7 +327,11 @@ namespace LinguagensFormais
                     }
                     if (Token.Equals("TOKEN.PARENTESES_DIREITO"))
                     {
-                        return true;
+                        TokenAction();
+                        if (Token.Equals("TOKEN.DOIS_PONTOS"))
+                        {
+                            return true;
+                        }
                     }
                 }
                 else
@@ -710,6 +754,8 @@ namespace LinguagensFormais
             {
                 TokenAction();
                 if (Token.Equals("TOKEN.IGUAL") || Token.Equals("TOKEN.MAIS_IGUAL") ||
+                    Token.Equals("TOKEN.MAIS") || Token.Equals("TOKEN.MENOS") ||
+                    Token.Equals("TOKEN.VEZES") || Token.Equals("TOKEN.BARRA") ||
                     Token.Equals("TOKEN.MENOS_IGUAL") || Token.Equals("TOKEN.VEZES_IGUAL") ||
                     Token.Equals("TOKEN.BARRA_IGUAL") || Token.Equals("TOKEN.PORCENTO_IGUAL") ||
                     Token.Equals("TOKEN.ARROBA_IGUAL") || Token.Equals("TOKEN.ECOMERCIAL_IGUAL") ||

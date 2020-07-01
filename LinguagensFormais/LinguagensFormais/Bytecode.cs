@@ -62,7 +62,7 @@ namespace LinguagensFormais
             int setupLoopWhile = 0, setupLoopWhileAux = 0, whileLoop = 0, forLoop = 0, setupLoopFor = 0, setupLoopForAux = 0;
 
             //Ajusta argumentos dos jumps       
-            var withoutArguments = BytecodeFounds.Where(x => x.Argument.Trim().Equals("")).ToList();
+            var withoutArguments = BytecodeFounds.Where(x => x.Argument != null && x.Argument.Trim().Equals("")).ToList();
             if(withoutArguments != null)
             {
                 withoutArguments.ForEach(argument =>
@@ -171,7 +171,7 @@ namespace LinguagensFormais
                     }
                 }                    
                 
-                if (tokens[index].Token.Equals("TOKEN.ELSE")) return list;                                
+                if (tokens[index].Token.Equals("TOKEN.ELSE") || tokens[index].Token.Equals("TOKEN.DEF")) return list;                                
 
                 int actualLine = tokens[index].Line;
                 InsertIntoLineArgumentsList(actualLine, IdentLevel.Count, tokens[index].Token);
@@ -216,7 +216,6 @@ namespace LinguagensFormais
                     list.Add(new BytecodeFound
                     {
                         OpName = "POP_BLOCK_WHILE",
-                        Argument = "",
                         Line = line - 1
                     });
 
@@ -240,7 +239,6 @@ namespace LinguagensFormais
                     list.Add(new BytecodeFound
                     {
                         OpName = "POP_BLOCK_FOR",
-                        Argument = "",
                         Line = line - 1
                     });
 
@@ -256,7 +254,7 @@ namespace LinguagensFormais
                         Argument = ""
                     });
                 }
-                else
+                else if(!tokens[index - 1].Token.Equals("TOKEN.DEDENT") && !tokens[index].Token.Equals("TOKEN.EOF"))
                 {
                     InsertIntoLineArgumentsList(actualLine, IdentLevel.Count);
                     list.Add(new BytecodeFound
@@ -266,7 +264,7 @@ namespace LinguagensFormais
                     });
                 }
             }
-            if (tokens[index].Token.Equals("TOKEN.ELSE"))
+            if (tokens[index].Token.Equals("TOKEN.ELSE") || tokens[index].Token.Equals("TOKEN.DEF"))
             {
                 return list;
             }
@@ -290,6 +288,16 @@ namespace LinguagensFormais
                 IsFor(tokens, index).ForEach(bytecode => list.Add(bytecode));
                 return list;
             }
+            else if (tokens[index].Token.Equals("TOKEN.ID") && tokens[index + 1].Token.Equals("TOKEN.PARENTESES_ESQUERDO"))
+            {
+                IsFunction(tokens, index).ForEach(bytecode => list.Add(bytecode));
+                return list;
+            }
+            else if (tokens[index].Token.Equals("TOKEN.RETURN"))
+            {
+                IsReturn(tokens, index).ForEach(bytecode => list.Add(bytecode));
+                return list;
+            }
             else if (tokens[index].Token.Equals("TOKEN.EOF"))
             {
                 var endProgram = new BytecodeFound()
@@ -308,12 +316,12 @@ namespace LinguagensFormais
             return list;
         }
 
-        private List<BytecodeFound> IsAssign(List<TokensFound> tokens, int indented = 0)
+        private List<BytecodeFound> IsAssign(List<TokensFound> tokens, int indented = 0, bool isReturn = false)
         {
             var bytecodeFoundList = new List<BytecodeFound>();
             Size = 1;
 
-            for (int index = indented + 2; index < tokens.Count; index += Size)
+            for (int index = isReturn ? indented : indented + 2; index < tokens.Count; index += Size)
             {
                 Size = 0;
                 var list = GetAssignBytecodeFound(tokens, index);
@@ -330,6 +338,8 @@ namespace LinguagensFormais
                     Size++;
                 }
             }
+
+            if (isReturn) return bytecodeFoundList;
 
             GetAssignBytecodeFound(tokens, indented + 1).ForEach(bytecode => bytecodeFoundList.Add(bytecode));
 
@@ -466,18 +476,18 @@ namespace LinguagensFormais
             if (tokens[index].Token.Equals("TOKEN.ID"))
             {
                 var indexAux = index - 1;
-                if ((indexAux >= 0 && tokens[indexAux].Token.Equals("TOKEN.IGUAL")) || tokens[index + 1].Token.Equals("TOKEN.IGUAL"))
+                if ((indexAux >= 0 && tokens[indexAux].Token.Equals("TOKEN.IGUAL")) || tokens[indexAux].Token.Equals("TOKEN.RETURN") || (!IsOutOfBounds(index + 1, tokens) && tokens[index + 1].Token.Equals("TOKEN.IGUAL")))
                 {
                     OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
                     bytecodeFoundList.Add(CreateBytecodeFoundObject(opName, tokens[index].Lexema));
                     return bytecodeFoundList;
                 }
-                else if ((indexAux >= 0 && tokens[indexAux].Token.Equals("TOKEN.MAIS")) || tokens[index + 1].Token.Equals("TOKEN.MAIS"))
+                else if ((indexAux >= 0 && tokens[indexAux].Token.Equals("TOKEN.MAIS")) || (!IsOutOfBounds(index + 1, tokens) && tokens[index + 1].Token.Equals("TOKEN.MAIS")))
                 {
                     OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
                     bytecodeFoundList.Add(CreateBytecodeFoundObject(opName, tokens[index].Lexema));
-
-                    OperationsName.OperationsNameList.TryGetValue(index >= 0 ? tokens[indexAux].Token : tokens[index + 1].Token, out opName);
+                    OperationsName.OperationsNameList.TryGetValue(index >= 0 ? tokens[indexAux].Token : tokens[index + 1].Token, out opName);                    
+                    
                     bytecodeFoundList.Add(CreateBytecodeFoundObject(opName));
 
                     return bytecodeFoundList;
@@ -599,6 +609,61 @@ namespace LinguagensFormais
 
             OperationsName.OperationsNameList.TryGetValue(tokens[indented + 1].Token, out opName);
             bytecodeFoundList.Add(CreateBytecodeFoundObject(opName, tokens[indented + 1].Lexema));
+
+            return bytecodeFoundList;
+        }
+
+        private List<BytecodeFound> IsFunction(List<TokensFound> tokens, int indented = 0)
+        {
+            var bytecodeFoundList = new List<BytecodeFound>();
+
+            var bytecode = new BytecodeFound()
+            {
+                OpName = "LOAD_GLOBAL",
+                FriendlyInterpretation = tokens[indented].Lexema,
+                Argument = ""
+            };
+            bytecodeFoundList.Add(bytecode);
+
+            //possui parametros
+            int parameters = 0;
+            if(!tokens[indented + 2].Token.Equals("TOKEN.PARENTESES_DIREITO"))
+            {
+                var index = indented + 2;
+                while (!IsOutOfBounds(index, tokens) && !tokens[index].Token.Equals("TOKEN.DOIS_PONTOS"))
+                {
+                    OperationsName.OperationsNameList.TryGetValue(tokens[index].Token, out string opName);
+                    bytecodeFoundList.Add(CreateBytecodeFoundObject(opName, tokens[index].Lexema));
+                    index += 2;
+                    parameters++;
+                }
+            }
+
+            bytecode = new BytecodeFound()
+            {
+                OpName = "CALL_FUNCTION",
+                FriendlyInterpretation = parameters.ToString() + " positional, 0 keyword pair"
+            };
+            bytecodeFoundList.Add(bytecode);
+
+            bytecode = new BytecodeFound()
+            {
+                OpName = "POP_TOP"                
+            };
+            bytecodeFoundList.Add(bytecode);
+
+
+            return bytecodeFoundList;
+        }
+
+        private List<BytecodeFound> IsReturn(List<TokensFound> tokens, int indented = 0)
+        {
+            var bytecodeFoundList = IsAssign(tokens, indented + 1, true);
+            bytecodeFoundList.Add(new BytecodeFound()
+            {
+                OpName = "RETURN_VALUE"
+            });
+
 
             return bytecodeFoundList;
         }

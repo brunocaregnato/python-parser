@@ -21,4 +21,8 @@ while(a < b):
 a = 2
 for a in range(5):
     a = b
+soma(a, b)
 b = 4
+
+def soma(a, b):
+    return a + b
