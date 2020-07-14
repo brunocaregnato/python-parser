@@ -11,14 +11,16 @@ namespace LinguagensFormais
         private int Size { get; set; }
         private List<Arguments> ArgumentsList { get; set; }        
         private List<int> LineArgumentsList { get; set; }
+
         private Stack<int> IdentLevel { get; set; }
         private int IdentPrevious { get; set; }
         private Stack<int> WhileLevel { get; set; } 
+
         private int WhileCounter { get; set; }
         private Stack<int> ForLevel { get; set; }
         private int ForCounter { get; set; }
-        private int BlockSize { get; set; }
 
+        private int BlockSize { get; set; }
 
         private TokensFound LastLine { get; set; }
 
@@ -59,7 +61,7 @@ namespace LinguagensFormais
 
             }
 
-            int setupLoopWhile = 0, setupLoopWhileAux = 0, whileLoop = 0, forLoop = 0, setupLoopFor = 0, setupLoopForAux = 0;
+            int setupLoopWhile = 0, setupLoopWhileAux = 0, setupLoopFor = 0, setupLoopForAux = 0;
 
             //Ajusta argumentos dos jumps       
             var withoutArguments = BytecodeFounds.Where(x => x.Argument != null && x.Argument.Trim().Equals("")).ToList();
@@ -110,23 +112,21 @@ namespace LinguagensFormais
                     }
                     else if (name.Equals("SETUP_LOOP_WHILE"))
                     {
-                        setupLoopWhile++;
                         argument.OpName = "SETUP_LOOP";
-                        var popBlock = BytecodeFounds.Where(x => x.OpName.Equals("POP_BLOCK_WHILE")).ElementAt(whileLoop++);
+                        var popBlock = BytecodeFounds.Where(x => x.OpName.Equals("POP_BLOCK_WHILE")).ElementAt(setupLoopWhile++);
                         argument.FriendlyInterpretation = "to " + (popBlock.Address).ToString(); //sempre no do pop block
                         argument.Argument = (popBlock.Address - 2).ToString(); //sempre antes do jump_absolute
                     }
                     else if (name.Equals("SETUP_LOOP_FOR"))
                     {
-                        setupLoopFor++;
                         argument.OpName = "SETUP_LOOP";
-                        var popBlock = BytecodeFounds.Where(x => x.OpName.Equals("POP_BLOCK_FOR")).ElementAt(forLoop++);
+                        var popBlock = BytecodeFounds.Where(x => x.OpName.Equals("POP_BLOCK_FOR")).ElementAt(setupLoopFor++);
                         argument.FriendlyInterpretation = "to " + (popBlock.Address).ToString(); //sempre no do pop block
                         argument.Argument = (popBlock.Address - 2).ToString(); //sempre antes do jump_absolute
                     }
                     else if (name.Equals("FOR_ITER"))
                     {
-                        var popBlock = BytecodeFounds.Where(x => x.OpName.Equals("POP_BLOCK_FOR")).ElementAt(forLoop - 1);
+                        var popBlock = BytecodeFounds.Where(x => x.OpName.Equals("POP_BLOCK_FOR")).ElementAt(setupLoopFor - 1);
                         argument.FriendlyInterpretation = "to " + (popBlock.Address).ToString(); //sempre no do pop block
                     }
                 });
@@ -144,12 +144,13 @@ namespace LinguagensFormais
             return true;
         }
 
-        private List<BytecodeFound> GetObjects(int line, int index = 0)
+        private List<BytecodeFound> GetObjects(int line)
         {
             var tokens = TokensList.FindAll(x => x.Line.Equals(line));
             var list = new List<BytecodeFound>();
             bool hasPlaceJumpForward = false;
-            
+            int index = 0;
+
             while (tokens[index].Token.Equals("TOKEN.INDENT"))
             {
                 index++;
@@ -174,11 +175,11 @@ namespace LinguagensFormais
                 if (tokens[index].Token.Equals("TOKEN.ELSE") || tokens[index].Token.Equals("TOKEN.DEF")) return list;                                
 
                 int actualLine = tokens[index].Line;
-                InsertIntoLineArgumentsList(actualLine, IdentLevel.Count, tokens[index].Token);
+                InsertIntoLineArgumentsList(actualLine, IdentLevel.Count);
 
                 if (tokens[index].Token.Equals("TOKEN.IF") || tokens[index].Token.Equals("TOKEN.ELIF"))
                 {
-                    InsertIntoLineArgumentsList(actualLine, IdentLevel.Count, tokens[index].Token);
+                    InsertIntoLineArgumentsList(actualLine, IdentLevel.Count);
                     if (!hasPlaceJumpForward)
                     {
                         list.Add(new BytecodeFound
@@ -789,7 +790,7 @@ namespace LinguagensFormais
             return !(index <= tokens.Count - 1);
         }
 
-        private void InsertIntoLineArgumentsList(int line, int identLevel, string token = "")
+        private void InsertIntoLineArgumentsList(int line, int identLevel)
         {
             if(identLevel == 1)
             {
