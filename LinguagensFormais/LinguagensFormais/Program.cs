@@ -119,7 +119,7 @@ namespace LinguagensFormais
                     column = " | " + string.Format("{0,4}", "Coluna") + " |";
                     printLine = sequence + token + lexema + line + column;
                     outputFile.WriteLine(printLine);
-                    var space = new String('-', 105);
+                    var space = new string('-', 105);
                     outputFile.WriteLine(space);
                     foreach (TokensFound rt in Lexical.TokensFound)
                     {
@@ -146,27 +146,39 @@ namespace LinguagensFormais
         {
             try
             {
-                string line, address, opname, friendlyInterpretation;
+                string line, address, opname, arguments, friendlyInterpretation;
                 var outputPath = FilePath.Substring(0, FilePath.LastIndexOf(Path.DirectorySeparatorChar));
                 using (StreamWriter outputFile = new StreamWriter(outputPath + @"\Bytecode.txt"))
                 {
                     line = "| " + string.Format("{0,5}", "Linha");
                     address = " |" + string.Format("{0,10}", "Endereço");
-                    opname = " |" + string.Format("{0,20}", "Operação");
+                    opname = " |" + string.Format("{0,25}", "Operação");
+                    arguments = " |" + string.Format("{0,11}", "Argumentos");
                     friendlyInterpretation = " | " + string.Format("{0,20}", "Interpretação Humana");
-                    var printLine = line + address + opname + friendlyInterpretation;
-                    outputFile.WriteLine(printLine);
-                    var space = new string('-', 134);
-                    outputFile.WriteLine(space);
+                    var printLine = line + address + opname + arguments + friendlyInterpretation;
+                    outputFile.WriteLine(printLine + '\n' + new string('-', 134));
                     int lineAux = 0;
                     foreach (BytecodeFound rt in Bytecode.BytecodeFounds)
                     {                                
+                        if(rt.OpName.Equals("JUMP_FORWARD") || rt.OpName.Equals("RETURN_VALUE"))
+                        {
+                            line = "| " +  string.Format("{0,5}", " ");
+                            address = " |" + string.Format("{0,10}", rt.Address);
+                            opname = " |" + string.Format("{0,25}", rt.OpName);
+                            arguments = " |" + string.Format("{0,11}", rt.Argument);
+                            friendlyInterpretation = rt.FriendlyInterpretation != null ? " | (" + string.Format("{0,5}", rt.FriendlyInterpretation).Trim() + ")" : " | " + string.Format("{0,5}", "");
+                            printLine = line + address + opname + arguments + friendlyInterpretation;
+                            outputFile.WriteLine(printLine);
+                            continue;
+                        }
+
                         line = rt.Line.Equals(lineAux) ? "| " + string.Format("{0,5}", " ") : "| " + string.Format("{0,5}", rt.Line);
                         address = " |" + string.Format("{0,10}", rt.Address);
-                        opname = " |" + string.Format("{0,20}", rt.OpName);
-                        friendlyInterpretation = rt.FriendlyInterpretation != null ? " | (" + string.Format("{0,5}", rt.FriendlyInterpretation).Trim() + ")" : string.Format("{0,5}", "");
-                        printLine = (!rt.Line.Equals(lineAux) && lineAux > 0 ? "\n" : "") + line + address + opname + friendlyInterpretation;                        
-                        outputFile.WriteLine(printLine);
+                        opname = " |" + string.Format("{0,25}", rt.OpName);
+                        arguments = " |" + string.Format("{0,11}", rt.Argument);
+                        friendlyInterpretation = rt.FriendlyInterpretation != null ? " | (" + string.Format("{0,5}", rt.FriendlyInterpretation).Trim() + ")" : " | " + string.Format("{0,5}", "");
+                        printLine = (!rt.Line.Equals(lineAux) && lineAux > 0  ? "\n" : "") + line + address + opname + arguments + friendlyInterpretation;                        
+                        outputFile.WriteLine(printLine);        
                         lineAux = rt.Line;
                     }
                 }

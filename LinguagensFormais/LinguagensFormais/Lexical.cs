@@ -41,12 +41,10 @@ namespace LinguagensFormais
                     while ((readLine = streamReader.ReadLine()) != null)
                     {
                         Position = 0;
-                        /* Arquivo sem linhas */
-                        if (readLine.Length.Equals(0)) return false;
-
-                        readLine = readLine.TrimEnd();
 
                         /* Linha de espaçamento */
+                        readLine = readLine.TrimEnd();
+
                         if (readLine.Length.Equals(0)) continue;    
 
                         /* Verifica se começa com um comentário múltiplo */
