@@ -179,7 +179,7 @@ namespace LinguagensFormais
 
                 if (tokens[index].Token.Equals("TOKEN.IF") || tokens[index].Token.Equals("TOKEN.ELIF"))
                 {
-                    InsertIntoLineArgumentsList(actualLine, IdentLevel.Count);
+                    InsertIntoLineArgumentsList(actualLine, IdentLevel.Count, tokens[index].Token);
                     if (!hasPlaceJumpForward)
                     {
                         list.Add(new BytecodeFound
@@ -790,7 +790,7 @@ namespace LinguagensFormais
             return !(index <= tokens.Count - 1);
         }
 
-        private void InsertIntoLineArgumentsList(int line, int identLevel)
+        private void InsertIntoLineArgumentsList(int line, int identLevel, string token = "")
         {
             if(identLevel == 1)
             {
@@ -800,7 +800,12 @@ namespace LinguagensFormais
             }
             else
             {
-                if(identLevel == 0)
+                if (token.Equals("TOKEN.ELIF"))
+                {
+                   LineArgumentsList.Sort();
+                   LineArgumentsList.Insert(0, line);        
+                }
+                else if (identLevel == 0)
                 {
                     if (LineArgumentsList.Count % 2 == 0 && identLevel != IdentPrevious)
                     {

@@ -210,7 +210,7 @@ namespace LinguagensFormais
             if (IsReturn())
             {
                 TokenAction();
-                if (Source())
+                if (Token.Equals("TOKEN.STRING") || Source())
                 {
                     return true;
                 }
@@ -755,7 +755,7 @@ namespace LinguagensFormais
                 TokenAction();
                 if (Token.Equals("TOKEN.IGUAL") || Token.Equals("TOKEN.MAIS_IGUAL") ||
                     Token.Equals("TOKEN.MAIS") || Token.Equals("TOKEN.MENOS") ||
-                    Token.Equals("TOKEN.VEZES") || Token.Equals("TOKEN.BARRA") ||
+                    Token.Equals("TOKEN.VEZES") || Token.Equals("TOKEN.BARRA") || 
                     Token.Equals("TOKEN.MENOS_IGUAL") || Token.Equals("TOKEN.VEZES_IGUAL") ||
                     Token.Equals("TOKEN.BARRA_IGUAL") || Token.Equals("TOKEN.PORCENTO_IGUAL") ||
                     Token.Equals("TOKEN.ARROBA_IGUAL") || Token.Equals("TOKEN.ECOMERCIAL_IGUAL") ||
